@@ -1,8 +1,9 @@
 
 import React from 'react'
-import { Card, CardGroup, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Badge, Alert } from 'react-bootstrap'
+import { Card, CardGroup, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Badge, Alert, DropdownButton, Dropdown } from 'react-bootstrap'
 import axios from 'axios'
 import "./PageStyle.css"
+import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
 
 export default class StatTable extends React.Component {
     constructor(props) {
@@ -22,7 +23,8 @@ export default class StatTable extends React.Component {
 
             LeaderPlayer: [],
             AccessBoolean: [true, false, false],
-            AllLeader: []
+            AllLeader: [],
+            keys: []
 
         };
 
@@ -37,7 +39,7 @@ export default class StatTable extends React.Component {
     async computeLeaders(e) {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
-        await axios.post('https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
+        await axios.post('/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ Leaders: JSON.stringify(response.data) })
@@ -64,7 +66,7 @@ export default class StatTable extends React.Component {
 
     async componentDidMount() {
 
-        await axios.get('https://react-flask-fantasy.herokuapp.com/test')
+        await axios.get('/test')
             .then(response => {
                 this.setState({ p: JSON.stringify(response.data) })
             })
@@ -96,7 +98,7 @@ export default class StatTable extends React.Component {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
-        await axios.post('https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
+        await axios.post('/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ Leaders: JSON.stringify(response.data) })
@@ -110,7 +112,7 @@ export default class StatTable extends React.Component {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
-        await axios.post('https://react-flask-fantasy.herokuapp.com/winning-matchups', bodyFormData)
+        await axios.post('/winning-matchups', bodyFormData)
 
             .then((response) => {
 
@@ -120,16 +122,47 @@ export default class StatTable extends React.Component {
 
         var arr = []
         var obj = JSON.parse(this.state.Winning)
-        var g = Object.keys(obj)
+        var PlayerList = Object.keys(obj)
 
-        for (var i in g) {
+
+        for (var i in PlayerList) {
             var x = {}
-            x[g[i]] = obj[g[i]]
+            console.log(obj[PlayerList[i]])
+
+            x[PlayerList[i]] = obj[PlayerList[i]]
             arr.push(x)
         }
 
         await this.setState({ Winning: arr })
-        await this.setState({ LeaderPlayer: g })
+        await this.setState({ LeaderPlayer: PlayerList })
+
+        console.log(arr)
+
+
+
+        {
+            this.state.Winning.map((item, i) => {
+
+                console.log(this.state.LeaderPlayer[i])
+
+                {
+                    item[this.state.LeaderPlayer[i]].map((x, e) => {
+                        console.log(Object.keys(x)[0])
+                        {
+                            (x[Object.keys(x)].map((r, w) => {
+                                console.log(r)
+                            }))
+                        }
+
+
+                    })
+                }
+
+
+
+            })
+        }
+
 
         this.showContent(e)
 
@@ -145,6 +178,9 @@ export default class StatTable extends React.Component {
 
         await this.setState({ AccessBoolean: arr })
 
+        /*
+                
+                */
 
 
 
@@ -182,50 +218,50 @@ export default class StatTable extends React.Component {
                     :
                     <div>
 
-                    <h1 style={{ textAlign: 'center' }}>Current Week Stats by Team</h1>
-                    <Table className="StatTable" responsive>
-                        {this.state.dataArray.map((item, i) => {
-                            return (
+                        <h1 style={{ textAlign: 'center' }}>Current Week Stats by Team</h1>
+                        <Table className="StatTable" responsive>
+                            {this.state.dataArray.map((item, i) => {
+                                return (
 
-                                <Table bordered >
-                                    <td><strong>{this.state.Players[i]}</strong></td>
+                                    <Table bordered >
+                                        <td><strong>{this.state.Players[i]}</strong></td>
 
-                                    {this.state.Categories.map((cat, x) =>
-                                        <td>
-                                            <strong>{cat}</strong>
-                                        </td>
-                                    )}
-                                    <tbody>
+                                        {this.state.Categories.map((cat, x) =>
+                                            <td>
+                                                <strong>{cat}</strong>
+                                            </td>
+                                        )}
+                                        <tbody>
 
-                                        <tr>
-
-
-                                            <td></td>
-                                            {this.state.Categories.map((cat, x) =>
+                                            <tr>
 
 
-
-                                                <td>
-                                                    {item[this.state.Players[i]][cat]}
-                                                </td>
-
-                                            )}
+                                                <td></td>
+                                                {this.state.Categories.map((cat, x) =>
 
 
-                                        </tr>
+
+                                                    <td>
+                                                        {item[this.state.Players[i]][cat]}
+                                                    </td>
+
+                                                )}
 
 
-                                    </tbody>
-                                </Table>
+                                            </tr>
 
 
-                            )
+                                        </tbody>
+                                    </Table>
 
 
-                        })
-                        }
+                                )
 
-                    </Table>
+
+                            })
+                            }
+
+                        </Table>
                     </div>
 
                 }
@@ -341,13 +377,11 @@ export default class StatTable extends React.Component {
 
                         <div>
 
-
                             <h1 style={{ textAlign: 'center' }}>Is your Team Bad?</h1>
                             <Table bordered responsive className="OtherTeamTable">
                                 {this.state.Winning.map((item, i) => {
                                     return (
                                         <div>
-
 
 
                                             <Badge className="OtherTeam" variant="secondary" style={{ fontSize: '1.2rem' }}>{this.state.LeaderPlayer[i]} : {item[this.state.LeaderPlayer[i]].length} Teams</Badge>
@@ -359,7 +393,25 @@ export default class StatTable extends React.Component {
 
 
                                                     {item[this.state.LeaderPlayer[i]].map((x, e) => {
-                                                        return (<th>{x}</th>)
+
+                                                        return (
+                                                            <td>
+                                                            <Dropdown>
+                                                                <Dropdown.Toggle variant="secondary">{Object.keys(x)[0]} : {x[Object.keys(x)].length}</Dropdown.Toggle>
+
+                                                            
+                                                            <Dropdown.Menu>
+                                                                {x[Object.keys(x)].map((r, w) => {
+                                                                    return (
+                                                                        <Dropdown.Item>{r}</Dropdown.Item>
+                                                                    )
+                                                                })}
+                                                                </Dropdown.Menu>
+
+
+                                                            </Dropdown>
+                                                            </td>
+                                                        )
 
 
                                                     })
@@ -367,7 +419,7 @@ export default class StatTable extends React.Component {
 
 
                                                 </tr>
-                                                <br/>
+                                                <br />
                                             </tbody>
 
                                         </div>
