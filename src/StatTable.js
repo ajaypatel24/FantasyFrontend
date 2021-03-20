@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Card, CardGroup, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Badge, Alert, DropdownButton, Dropdown } from 'react-bootstrap'
+import { Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown } from 'react-bootstrap'
 import axios from 'axios'
 import "./PageStyle.css"
 import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
@@ -39,7 +39,7 @@ export default class StatTable extends React.Component {
     async computeLeaders(e) {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
-        await axios.post('https://react-flask-fantasy.herokuapp.com//win-calculator', bodyFormData)
+        await axios.post('https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ Leaders: JSON.stringify(response.data) })
@@ -66,7 +66,7 @@ export default class StatTable extends React.Component {
 
     async componentDidMount() {
 
-        await axios.get('https://react-flask-fantasy.herokuapp.com//test')
+        await axios.get('https://react-flask-fantasy.herokuapp.com/test')
             .then(response => {
                 this.setState({ p: JSON.stringify(response.data) })
             })
@@ -112,7 +112,7 @@ export default class StatTable extends React.Component {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
-        await axios.post('https://react-flask-fantasy.herokuapp.com//winning-matchups', bodyFormData)
+        await axios.post('https://react-flask-fantasy.herokuapp.com/winning-matchups', bodyFormData)
 
             .then((response) => {
 
@@ -127,6 +127,7 @@ export default class StatTable extends React.Component {
 
         for (var i in PlayerList) {
             var x = {}
+            console.log(obj[PlayerList[i]])
 
             x[PlayerList[i]] = obj[PlayerList[i]]
             arr.push(x)
@@ -134,6 +135,33 @@ export default class StatTable extends React.Component {
 
         await this.setState({ Winning: arr })
         await this.setState({ LeaderPlayer: PlayerList })
+
+        console.log(arr)
+
+
+
+        {
+            this.state.Winning.map((item, i) => {
+
+                console.log(this.state.LeaderPlayer[i])
+
+                {
+                    item[this.state.LeaderPlayer[i]].map((x, e) => {
+                        console.log(Object.keys(x)[0])
+                        {
+                            (x[Object.keys(x)].map((r, w) => {
+                                console.log(r)
+                            }))
+                        }
+
+
+                    })
+                }
+
+
+
+            })
+        }
 
 
         this.showContent(e)
@@ -183,6 +211,9 @@ export default class StatTable extends React.Component {
                 </>
                 <br />
 
+            <Container fluid>
+                <Col>
+                <Row>
                 {this.state.AccessBoolean[0] === false ?
                     <p>
                     </p>
@@ -404,8 +435,9 @@ export default class StatTable extends React.Component {
 
 
                 }
-
-
+                </Row>
+</Col>
+</Container>
 
 
 
