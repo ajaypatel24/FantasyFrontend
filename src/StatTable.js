@@ -127,7 +127,6 @@ export default class StatTable extends React.Component {
 
         for (var i in PlayerList) {
             var x = {}
-            console.log(obj[PlayerList[i]])
 
             x[PlayerList[i]] = obj[PlayerList[i]]
             arr.push(x)
@@ -135,33 +134,6 @@ export default class StatTable extends React.Component {
 
         await this.setState({ Winning: arr })
         await this.setState({ LeaderPlayer: PlayerList })
-
-        console.log(arr)
-
-
-
-        {
-            this.state.Winning.map((item, i) => {
-
-                console.log(this.state.LeaderPlayer[i])
-
-                {
-                    item[this.state.LeaderPlayer[i]].map((x, e) => {
-                        console.log(Object.keys(x)[0])
-                        {
-                            (x[Object.keys(x)].map((r, w) => {
-                                console.log(r)
-                            }))
-                        }
-
-
-                    })
-                }
-
-
-
-            })
-        }
 
 
         this.showContent(e)
