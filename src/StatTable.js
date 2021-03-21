@@ -23,6 +23,7 @@ export default class StatTable extends React.Component {
 
             LeaderPlayer: [],
             AccessBoolean: [false, false, false],
+            LoadingButton: true,
             AllLeader: [],
             keys: []
 
@@ -92,7 +93,8 @@ export default class StatTable extends React.Component {
         this.setState({ dataArray: arr })
         this.setState({ Categories: catArray })
         var accessArr = [true,false,false]
-        this.setState({AccessBoolean: accessArr})
+        this.setState({AccessBoolean: accessArr,
+                        LoadingButton: false})
         
 
 
@@ -194,7 +196,7 @@ export default class StatTable extends React.Component {
             <Container fluid>
                 <Col>
                 <Row>
-                {this.state.AccessBoolean[0] === false ?
+                {this.state.AccessBoolean[0] === false && this.state.LoadingButton === true ?
                 
                     <div style={{
                         position: 'absolute', left: '50%', top: '50%',
