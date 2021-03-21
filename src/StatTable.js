@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown } from 'react-bootstrap'
+import { Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown } from 'react-bootstrap'
 import axios from 'axios'
 import "./PageStyle.css"
 import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
@@ -22,7 +22,7 @@ export default class StatTable extends React.Component {
             Winning: [],
 
             LeaderPlayer: [],
-            AccessBoolean: [true, false, false],
+            AccessBoolean: [false, false, false],
             AllLeader: [],
             keys: []
 
@@ -90,6 +90,9 @@ export default class StatTable extends React.Component {
         this.setState({ Players: g })
         this.setState({ dataArray: arr })
         this.setState({ Categories: catArray })
+        var accessArr = [true,false,false]
+        this.setState({AccessBoolean: accessArr})
+        
 
 
     }
@@ -187,8 +190,17 @@ export default class StatTable extends React.Component {
                 <Col>
                 <Row>
                 {this.state.AccessBoolean[0] === false ?
-                    <p>
-                    </p>
+                
+                    <div style={{
+                        position: 'absolute', left: '50%', top: '50%',
+                        transform: 'translate(-50%, -50%)'
+                    }}>
+                    <Spinner size="lg" animation="border" role="status"  >
+                    
+                    </Spinner>
+                    </div>
+                    
+                    
 
                     :
                     <div>
