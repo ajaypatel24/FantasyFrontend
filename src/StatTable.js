@@ -33,6 +33,7 @@ export default class StatTable extends React.Component {
         this.computeLeaders = this.computeLeaders.bind(this)
         this.winningMatchup = this.winningMatchup.bind(this)
         this.showContent = this.showContent.bind(this)
+        this.refresh = this.refresh.bind(this)
     }
 
 
@@ -161,6 +162,10 @@ export default class StatTable extends React.Component {
 
     }
 
+    refresh() {
+        window.location.reload(false)
+    }
+
 
     render() {
 
@@ -195,9 +200,16 @@ export default class StatTable extends React.Component {
                         position: 'absolute', left: '50%', top: '50%',
                         transform: 'translate(-50%, -50%)'
                     }}>
-                    <Spinner size="lg" animation="border" role="status"  >
-                    
-                    </Spinner>
+                    <Button variant="secondary" onClick={this.refresh}>
+    <Spinner
+      as="span"
+      animation="border"
+      size="lg"
+      role="status"
+      aria-hidden="true"
+    />
+    <strong>Click to refresh if taking too long</strong>
+  </Button>
                     </div>
                     
                     
