@@ -92,10 +92,15 @@ export default class StatTable extends React.Component {
         this.setState({ Players: g })
         this.setState({ dataArray: arr })
         this.setState({ Categories: catArray })
-        var accessArr = [true,false,false]
-        this.setState({AccessBoolean: accessArr,
-                        LoadingButton: false})
-        
+        var accessArr = [true, false, false]
+        await this.setState({
+            AccessBoolean: accessArr,
+        })
+
+        this.setState({
+            LoadingButton: false
+        })
+
 
 
     }
@@ -156,10 +161,7 @@ export default class StatTable extends React.Component {
 
         await this.setState({ AccessBoolean: arr })
 
-        /*
-                
-                */
-
+        
 
 
     }
@@ -193,249 +195,238 @@ export default class StatTable extends React.Component {
                 </>
                 <br />
 
-            <Container fluid>
-                <Col>
-                <Row>
-                {this.state.AccessBoolean[0] === false && this.state.LoadingButton === true ?
-                
-                    <div style={{
-                        position: 'absolute', left: '50%', top: '50%',
-                        transform: 'translate(-50%, -50%)'
-                    }}>
-                    <Button variant="secondary" onClick={this.refresh}>
-    <Spinner
-      as="span"
-      animation="border"
-      size="lg"
-      role="status"
-      aria-hidden="true"
-    />
-    <strong>Click to refresh if taking too long</strong>
-  </Button>
-                    </div>
-                    
-                    
+                <Container fluid>
+                    <Col>
+                        <Row>
+                            {this.state.AccessBoolean[0] === false  ? 
 
-                    :
-                    <div>
+                                
+                            <p></p>
 
-                        <h1 style={{ textAlign: 'center' }}>Current Week Stats by Team</h1>
-                        <Table className="StatTable" responsive>
-                            {this.state.dataArray.map((item, i) => {
-                                return (
+                            
+                            
 
-                                    <Table bordered >
-                                        <td><strong>{this.state.Players[i]}</strong></td>
+                                :
 
-                                        {this.state.Categories.map((cat, x) =>
-                                            <td>
-                                                <strong>{cat}</strong>
-                                            </td>
-                                        )}
-                                        <tbody>
+                                <div>
 
-                                            <tr>
+                                    <h1 style={{ textAlign: 'center' }}>Current Week Stats by Team</h1>
+                                    <Table className="StatTable" responsive>
+                                        {this.state.dataArray.map((item, i) => {
+                                            return (
+
+                                                <Table bordered >
+                                                    <td><strong>{this.state.Players[i]}</strong></td>
+
+                                                    {this.state.Categories.map((cat, x) =>
+                                                        <td>
+                                                            <strong>{cat}</strong>
+                                                        </td>
+                                                    )}
+                                                    <tbody>
+
+                                                        <tr>
 
 
-                                                <td></td>
-                                                {this.state.Categories.map((cat, x) =>
+                                                            <td></td>
+                                                            {this.state.Categories.map((cat, x) =>
 
 
 
-                                                    <td>
-                                                        {item[this.state.Players[i]][cat]}
-                                                    </td>
+                                                                <td>
+                                                                    {item[this.state.Players[i]][cat]}
+                                                                </td>
 
-                                                )}
-
-
-                                            </tr>
+                                                            )}
 
 
-                                        </tbody>
+                                                        </tr>
+
+
+                                                    </tbody>
+                                                </Table>
+
+
+                                            )
+
+
+                                        })
+                                        }
+
                                     </Table>
+                                </div>
 
-
-                                )
-
-
-                            })
                             }
 
-                        </Table>
-                    </div>
-
-                }
 
 
 
 
 
+                            {
+                                this.state.AccessBoolean[1] === false ?
 
-                {
-                    this.state.AccessBoolean[1] === false ?
+                                    <p></p>
 
-                        <p></p>
-
-                        :
-                        <div >
-
+                                    :
+                                    <div >
 
 
 
-                            <h1 style={{ textAlign: 'center' }}>Current Week Category Ranks</h1>
-                            <div className="tableContent">
+
+                                        <h1 style={{ textAlign: 'center' }}>Current Week Category Ranks</h1>
+                                        <div className="tableContent">
 
 
-                                <Table className="InnerTable" style={{ width: '100%' }}>
-                                    <CardGroup>
-                                        {
-                                            this.state.AllLeader.map((item, i) => {
+                                            <Table className="InnerTable" style={{ width: '100%' }}>
+                                                <CardGroup>
+                                                    {
+                                                        this.state.AllLeader.map((item, i) => {
 
-                                                return (
+                                                            return (
 
-                                                    <Card>
-                                                        <Table style={{ width: '100%' }}>
+                                                                <Card>
+                                                                    <Table style={{ width: '100%' }}>
 
 
 
-                                                            <thead>
-                                                                <th style={{ fontSize: '1.3rem' }}>
+                                                                        <thead>
+                                                                            <th style={{ fontSize: '1.3rem' }}>
 
-                                                                    {this.state.Categories[i]} Standings
+                                                                                {this.state.Categories[i]} Standings
 
 
                                                         </th>
-                                                            </thead>
-                                                            <tbody>
+                                                                        </thead>
+                                                                        <tbody>
 
-                                                                <tr>
-                                                                    {item.map((val, x) => {
-                                                                        return (
+                                                                            <tr>
+                                                                                {item.map((val, x) => {
+                                                                                    return (
 
-                                                                            <p>
-                                                                                { x === 0 ?
-                                                                                    <div>
-                                                                                        <td><strong>{val[0]}</strong></td>
-                                                                                        <td>
-                                                                                            <strong>{val[1]}</strong>
-                                                                                        </td>
-                                                                                    </div>
+                                                                                        <p>
+                                                                                            { x === 0 ?
+                                                                                                <div>
+                                                                                                    <td><strong>{val[0]}</strong></td>
+                                                                                                    <td>
+                                                                                                        <strong>{val[1]}</strong>
+                                                                                                    </td>
+                                                                                                </div>
 
-                                                                                    :
-                                                                                    <div>
-                                                                                        <td>{val[0]}</td>
-                                                                                        <td className="Value">
-                                                                                            {val[1]}
-                                                                                        </td>
-                                                                                    </div>
-                                                                                }
+                                                                                                :
+                                                                                                <div>
+                                                                                                    <td>{val[0]}</td>
+                                                                                                    <td className="Value">
+                                                                                                        {val[1]}
+                                                                                                    </td>
+                                                                                                </div>
+                                                                                            }
 
-                                                                            </p>
+                                                                                        </p>
 
-                                                                        )
-                                                                    })}
+                                                                                    )
+                                                                                })}
 
-                                                                </tr>
+                                                                            </tr>
 
-                                                            </tbody>
-
-
-
-
-                                                        </Table>
-                                                    </Card>
-
-
-                                                )
-
-                                            })}
-                                    </CardGroup>
-                                </Table>
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-                }
+                                                                        </tbody>
 
 
 
 
+                                                                    </Table>
+                                                                </Card>
 
 
+                                                            )
 
-                {
-                    this.state.AccessBoolean[2] === false ?
-                        <p></p>
-
-                        :
-
-                        <div>
-
-                            <h1 style={{ textAlign: 'center' }}>Is your Team Bad?</h1>
-                            <Table bordered responsive className="OtherTeamTable">
-                                {this.state.Winning.map((item, i) => {
-                                    return (
-                                        <div>
+                                                        })}
+                                                </CardGroup>
+                                            </Table>
 
 
-                                            <Badge className="OtherTeam" variant="secondary" style={{ fontSize: '1.2rem' }}>{this.state.LeaderPlayer[i]} : {item[this.state.LeaderPlayer[i]].length} Teams</Badge>
-
-
-                                            <tbody>
-                                                {item[this.state.LeaderPlayer[i]].length === 0 ? <Alert variant="danger" style={{ fontSize: '2.2rem' }}>Your Team is Bad</Alert> : null}
-                                                <tr>
-
-
-                                                    {item[this.state.LeaderPlayer[i]].map((x, e) => {
-
-                                                        return (
-                                                            <td>
-                                                            <Dropdown>
-                                                                <Dropdown.Toggle variant="secondary">{Object.keys(x)[0]} : {x[Object.keys(x)].length}</Dropdown.Toggle>
-
-                                                            
-                                                            <Dropdown.Menu>
-                                                                {x[Object.keys(x)].map((r, w) => {
-                                                                    return (
-                                                                        <Dropdown.Item>{r}</Dropdown.Item>
-                                                                    )
-                                                                })}
-                                                                </Dropdown.Menu>
-
-
-                                                            </Dropdown>
-                                                            </td>
-                                                        )
-
-
-                                                    })
-                                                    }
-
-
-                                                </tr>
-                                                <br />
-                                            </tbody>
 
                                         </div>
 
-                                    )
-                                })}
-                            </Table>
-
-                        </div>
 
 
-                }
-                </Row>
-</Col>
-</Container>
+                                    </div>
+
+
+                            }
+
+
+
+
+
+
+
+                            {
+                                this.state.AccessBoolean[2] === false ?
+                                    <p></p>
+
+                                    :
+
+                                    <div>
+
+                                        <h1 style={{ textAlign: 'center' }}>Is your Team Bad?</h1>
+                                        <Table bordered responsive className="OtherTeamTable">
+                                            {this.state.Winning.map((item, i) => {
+                                                return (
+                                                    <div>
+
+
+                                                        <Badge className="OtherTeam" variant="secondary" style={{ fontSize: '1.2rem' }}>{this.state.LeaderPlayer[i]} : {item[this.state.LeaderPlayer[i]].length} Teams</Badge>
+
+
+                                                        <tbody>
+                                                            {item[this.state.LeaderPlayer[i]].length === 0 ? <Alert variant="danger" style={{ fontSize: '2.2rem' }}>Your Team is Bad</Alert> : null}
+                                                            <tr>
+
+
+                                                                {item[this.state.LeaderPlayer[i]].map((x, e) => {
+
+                                                                    return (
+                                                                        <td>
+                                                                            <Dropdown>
+                                                                                <Dropdown.Toggle variant="secondary">{Object.keys(x)[0]} : {x[Object.keys(x)].length}</Dropdown.Toggle>
+
+
+                                                                                <Dropdown.Menu>
+                                                                                    {x[Object.keys(x)].map((r, w) => {
+                                                                                        return (
+                                                                                            <Dropdown.Item>{r}</Dropdown.Item>
+                                                                                        )
+                                                                                    })}
+                                                                                </Dropdown.Menu>
+
+
+                                                                            </Dropdown>
+                                                                        </td>
+                                                                    )
+
+
+                                                                })
+                                                                }
+
+
+                                                            </tr>
+                                                            <br />
+                                                        </tbody>
+
+                                                    </div>
+
+                                                )
+                                            })}
+                                        </Table>
+
+                                    </div>
+
+
+                            }
+                        </Row>
+                    </Col>
+                </Container>
 
 
 
