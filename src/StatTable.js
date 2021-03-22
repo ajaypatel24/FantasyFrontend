@@ -41,7 +41,7 @@ export default class StatTable extends React.Component {
     async computeLeaders(e) {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
-        await axios.post('https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
+        await axios.post('/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ Leaders: JSON.stringify(response.data) })
@@ -68,7 +68,7 @@ export default class StatTable extends React.Component {
 
     async componentDidMount() {
 
-        await axios.get('https://react-flask-fantasy.herokuapp.com/test')
+        await axios.get('/test')
             .then(response => {
                 this.setState({ p: JSON.stringify(response.data) })
             })
@@ -109,7 +109,7 @@ export default class StatTable extends React.Component {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
-        await axios.post('https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
+        await axios.post('/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ Leaders: JSON.stringify(response.data) })
@@ -123,7 +123,7 @@ export default class StatTable extends React.Component {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
-        await axios.post('https://react-flask-fantasy.herokuapp.com/winning-matchups', bodyFormData)
+        await axios.post('/winning-matchups', bodyFormData)
 
             .then((response) => {
 
@@ -201,7 +201,23 @@ export default class StatTable extends React.Component {
                             {this.state.AccessBoolean[0] === false  ? 
 
                                 
-                            <p></p>
+                            
+                                <div style={{
+                                    position: 'absolute', left: '50%', top: '50%',
+                                    transform: 'translate(-50%, -50%)'
+                                }}>
+                                    <Button variant="secondary" onClick={this.refresh}>
+                                        <Spinner
+                                            as="span"
+                                            animation="border"
+                                            size="lg"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />
+                                        <strong>Click to refresh if taking too long</strong>
+                                    </Button>
+                                </div>
+                            
 
                             
                             
