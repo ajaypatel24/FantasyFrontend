@@ -161,7 +161,7 @@ export default class StatTable extends React.Component {
 
         await this.setState({ AccessBoolean: arr })
 
-        
+
 
 
     }
@@ -198,13 +198,19 @@ export default class StatTable extends React.Component {
                 <Container fluid>
                     <Col>
                         <Row>
-                            {this.state.AccessBoolean[0] === false  ? 
-
+                            {this.state.AccessBoolean[0] === false ? 
+                                this.state.LoadingButton === true ? 
                                 
-                            <p></p>
+                                
+                                    <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}> 
+                                        <Button variant="secondary" onClick={this.refresh}> 
+                                        <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" /> 
+                                        <strong>Click to refresh if taking too long</strong> 
+                                        </Button> 
+                                    </div> 
+                                : <p> </p>
 
-                            
-                            
+
 
                                 :
 
