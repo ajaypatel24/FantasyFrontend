@@ -131,6 +131,7 @@ export default class StatTable extends React.Component {
             })
 
 
+        console.log(this.state.Winning)
         var arr = []
         var obj = JSON.parse(this.state.Winning)
         var PlayerList = Object.keys(obj)
@@ -200,7 +201,7 @@ export default class StatTable extends React.Component {
                         <Row>
                             {this.state.AccessBoolean[0] === false  ? 
 
-                                
+                                this.state.LoadingButton === true ? 
                             
                                 <div style={{
                                     position: 'absolute', left: '50%', top: '50%',
@@ -217,6 +218,13 @@ export default class StatTable extends React.Component {
                                         <strong>Click to refresh if taking too long</strong>
                                     </Button>
                                 </div>
+                                
+
+                                :
+
+                                <p>
+                                </p>
+                                
                             
 
                             
