@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown, Jumbotron, ListGroup, CardDeck } from 'react-bootstrap'
+import { Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown, Jumbotron, ListGroup, CardDeck, CardColumns, ListGroupItem } from 'react-bootstrap'
 import axios from 'axios'
 import "./PageStyle.css"
 import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
@@ -20,7 +20,7 @@ export default class StatTable extends React.Component {
             f: [],
             Prediction: [],
             Winning: [],
-
+            Integer: 1,
             LeaderPlayer: [],
             AccessBoolean: [false, false, false, false],
             LoadingButton: true,
@@ -70,13 +70,13 @@ export default class StatTable extends React.Component {
 
     async componentDidMount() {
 
-        await axios.get('https://react-flask-fantasy.herokuapp.com/test')
+        await axios.get('/test')
             .then(response => {
                 this.setState({ p: JSON.stringify(response.data) })
             })
 
 
-        await axios.get('https://react-flask-fantasy.herokuapp.com/predict')
+        await axios.get('/predict')
             .then(response => {
                 this.setState({ Prediction: JSON.stringify(response.data) })
             })
@@ -119,7 +119,7 @@ export default class StatTable extends React.Component {
             LoadingButton: false
         })
 
-        console.log(this.state.dataArray)
+        
 
 
 
@@ -500,14 +500,16 @@ export default class StatTable extends React.Component {
                                     <div>
 
                                     <h1 style={{ textAlign: 'center' }}>Matchup Predictions</h1>
+                                    <h6 style={{ textAlign: 'center' }}>FG% and FT% are off this week because of Bye last week</h6>
 
 
                                         
+                                        <CardColumns>
 
-                                        <CardDeck>
                                             {this.state.Prediction.map((item, i) => {
                                                 return (
-                                                    <Card style={{ width: '22rem' }}>
+                                                    
+                                                    <Card style={{ width: '100%' }}>
                                                         
                                                             
                                                                     <Card.Body>
@@ -515,13 +517,28 @@ export default class StatTable extends React.Component {
                                                                         {Object.keys(item).map((x, e) => {
                                                                             return ( 
                                                                             <div>
-                                                                            <ListGroup.Item>
-                                                                                <p>{x}</p>
-                                                                
+                                                                            <ListGroup.Item variant='secondary'>
+                                                                                <strong>{x}</strong>
                                                                             </ListGroup.Item>
                                                                             <ListGroup.Item>
-                                                                                <strong>{item[x]}</strong>
+                                                                                <strong>{item[x][0]}</strong>
                                                                             </ListGroup.Item>
+                                                                            
+                                                                            
+                                                                              
+
+                                                                                    {Object.keys(item[x][1]).map((y, z) => {
+                                                                                        return (
+                                                                                            <ListGroup.Item>
+                                                                                            <strong>{y}</strong> &nbsp;&nbsp;&nbsp;{item[x][1][y]}
+                                                                                            </ListGroup.Item>
+                                                                                        )
+                                                                                    })}
+                                                                                    
+                                                                                    
+                                                                                  
+                                                                             
+                                                                            
                                                                             </div>
 
                                                                             )
@@ -533,10 +550,11 @@ export default class StatTable extends React.Component {
                                                               
                                                         
                                                     </Card>
+                                                    
                                                 )
 
                                             })}
-                                        </CardDeck>
+                                        </CardColumns>
 
 
 
