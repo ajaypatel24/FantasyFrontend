@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown } from 'react-bootstrap'
+import { Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown, Jumbotron, ListGroup, CardDeck } from 'react-bootstrap'
 import axios from 'axios'
 import "./PageStyle.css"
 import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
@@ -18,14 +18,15 @@ export default class StatTable extends React.Component {
             AllData: [],
             Leaders: [],
             f: [],
-
+            Prediction: [],
             Winning: [],
 
             LeaderPlayer: [],
-            AccessBoolean: [false, false, false],
+            AccessBoolean: [false, false, false, false],
             LoadingButton: true,
             AllLeader: [],
-            keys: []
+            keys: [],
+            Tester: []
 
         };
 
@@ -35,6 +36,7 @@ export default class StatTable extends React.Component {
         this.winningMatchup = this.winningMatchup.bind(this)
         this.showContent = this.showContent.bind(this)
         this.refresh = this.refresh.bind(this)
+        this.getPrediction = this.getPrediction.bind(this)
     }
 
 
@@ -73,6 +75,21 @@ export default class StatTable extends React.Component {
                 this.setState({ p: JSON.stringify(response.data) })
             })
 
+
+        await axios.get('https://react-flask-fantasy.herokuapp.com/predict')
+            .then(response => {
+                this.setState({ Prediction: JSON.stringify(response.data) })
+            })
+
+
+
+
+
+        var obj2 = JSON.parse(this.state.Prediction)
+        await this.setState({ Prediction: obj2 })
+
+        console.log(this.state.Prediction)
+
         var arr = []
         var obj = JSON.parse(this.state.p)
         var g = Object.keys(obj)
@@ -86,13 +103,14 @@ export default class StatTable extends React.Component {
         }
 
         this.setState({ AllData: arr })
+
         for (var x in (arr[0][g[0]])) {
             catArray.push(x)
         }
         this.setState({ Players: g })
         this.setState({ dataArray: arr })
         this.setState({ Categories: catArray })
-        var accessArr = [true, false, false]
+        var accessArr = [true, false, false, false]
         await this.setState({
             AccessBoolean: accessArr,
         })
@@ -100,6 +118,8 @@ export default class StatTable extends React.Component {
         this.setState({
             LoadingButton: false
         })
+
+        console.log(this.state.dataArray)
 
 
 
@@ -131,6 +151,7 @@ export default class StatTable extends React.Component {
             })
 
 
+        console.log(this.state.Winning)
         var arr = []
         var obj = JSON.parse(this.state.Winning)
         var PlayerList = Object.keys(obj)
@@ -149,6 +170,24 @@ export default class StatTable extends React.Component {
 
         this.showContent(e)
 
+    }
+
+    async getPrediction(e) {
+        /*
+        await axios.get('/predict')
+        .then(response => {
+            this.setState({ Prediction: JSON.stringify(response.data) })
+        })
+
+        console.log(this.state.Prediction)
+        var arr = []
+        var obj = JSON.parse(this.state.Prediction)
+        console.log(obj)
+        await this.setState({ Prediction: obj })
+        await this.setState({ Tester: this.state.Prediction[0]})
+        console.log(this.state.Prediction)
+        */
+        this.showContent(e)
     }
 
     async showContent(e) {
@@ -187,6 +226,7 @@ export default class StatTable extends React.Component {
                                 <Button variant="dark" id="0" onClick={this.showContent}>Home</Button>
                                 <Button variant="dark" id="1" onClick={this.computeLeaders}>Leaders</Button>
                                 <Button variant="dark" id="2" onClick={this.winningMatchup}>Team vs Other Teams</Button>
+                                <Button variant="dark" id="3" onClick={this.getPrediction}>Predictions</Button>
                             </Nav>
 
                         </Navbar.Collapse>
@@ -198,17 +238,36 @@ export default class StatTable extends React.Component {
                 <Container fluid>
                     <Col>
                         <Row>
-                            {this.state.AccessBoolean[0] === false ? 
-                                this.state.LoadingButton === true ? 
-                                
-                                
-                                    <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}> 
-                                        <Button variant="secondary" onClick={this.refresh}> 
-                                        <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" /> 
-                                        <strong>Click to refresh if taking too long</strong> 
-                                        </Button> 
-                                    </div> 
-                                : <p> </p>
+
+                            {this.state.AccessBoolean[0] === false ?
+
+                                this.state.LoadingButton === true ?
+
+                                    <div style={{
+                                        position: 'absolute', left: '50%', top: '50%',
+                                        transform: 'translate(-50%, -50%)'
+                                    }}>
+                                        <Button variant="secondary" onClick={this.refresh}>
+                                            <Spinner
+                                                as="span"
+                                                animation="border"
+                                                size="lg"
+                                                role="status"
+                                                aria-hidden="true"
+                                            />
+                                            <strong>Click to refresh if taking too long</strong>
+                                        </Button>
+                                    </div>
+
+
+                                    :
+
+                                    <p>
+                                    </p>
+
+
+
+
 
 
 
@@ -430,6 +489,66 @@ export default class StatTable extends React.Component {
 
 
                             }
+
+
+                            {
+                                this.state.AccessBoolean[3] === false ?
+
+                                    <p></p>
+
+                                    :
+                                    <div>
+
+                                    <h1 style={{ textAlign: 'center' }}>Matchup Predictions</h1>
+
+
+                                        
+
+                                        <CardDeck>
+                                            {this.state.Prediction.map((item, i) => {
+                                                return (
+                                                    <Card style={{ width: '22rem' }}>
+                                                        
+                                                            
+                                                                    <Card.Body>
+                                                                        <ListGroup horizontal>
+                                                                        {Object.keys(item).map((x, e) => {
+                                                                            return ( 
+                                                                            <div>
+                                                                            <ListGroup.Item>
+                                                                                <p>{x}</p>
+                                                                
+                                                                            </ListGroup.Item>
+                                                                            <ListGroup.Item>
+                                                                                <strong>{item[x]}</strong>
+                                                                            </ListGroup.Item>
+                                                                            </div>
+
+                                                                            )
+
+                                                                        })}
+                                                                        </ListGroup>
+                                                                    </Card.Body>
+
+                                                              
+                                                        
+                                                    </Card>
+                                                )
+
+                                            })}
+                                        </CardDeck>
+
+
+
+                                    </div>
+
+
+                            }
+
+
+
+
+
                         </Row>
                     </Col>
                 </Container>
