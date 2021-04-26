@@ -70,13 +70,13 @@ export default class StatTable extends React.Component {
 
     async componentDidMount() {
 
-        await axios.get('/test')
+        await axios.get('https://react-flask-fantasy.herokuapp.com/test')
             .then(response => {
                 this.setState({ p: JSON.stringify(response.data) })
             })
 
 
-        await axios.get('/predict')
+        await axios.get('https://react-flask-fantasy.herokuapp.com/predict')
             .then(response => {
                 this.setState({ Prediction: JSON.stringify(response.data) })
             })
