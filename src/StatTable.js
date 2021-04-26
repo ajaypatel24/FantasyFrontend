@@ -88,8 +88,6 @@ export default class StatTable extends React.Component {
         var obj2 = JSON.parse(this.state.Prediction)
         await this.setState({ Prediction: obj2 })
 
-        console.log(this.state.Prediction)
-
         var arr = []
         var obj = JSON.parse(this.state.p)
         var g = Object.keys(obj)
@@ -151,7 +149,7 @@ export default class StatTable extends React.Component {
             })
 
 
-        console.log(this.state.Winning)
+  
         var arr = []
         var obj = JSON.parse(this.state.Winning)
         var PlayerList = Object.keys(obj)
