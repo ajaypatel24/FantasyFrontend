@@ -76,7 +76,7 @@ export default class StatTable extends React.Component {
             })
 
 
-        await axios.get('https://react-flask-fantasy.herokuapp.com/predict')
+        await axios.get('https://react-flask-fantasy.herokuapp.com/prediction-fast')
             .then(response => {
                 this.setState({ Prediction: JSON.stringify(response.data) })
             })
