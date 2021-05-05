@@ -2,7 +2,7 @@
 import React from 'react'
 import { Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown, Jumbotron, ListGroup, CardDeck, CardColumns, ListGroupItem } from 'react-bootstrap'
 import axios from 'axios'
-import "./PageStyle.css"
+import "../PageStyle.css"
 import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
 
 export default class StatTable extends React.Component {
@@ -76,7 +76,7 @@ export default class StatTable extends React.Component {
             })
 
 
-        await axios.get('https://react-flask-fantasy.herokuapp.com/prediction-fast')
+        await axios.get('https://react-flask-fantasy.herokuapp.com/predict')
             .then(response => {
                 this.setState({ Prediction: JSON.stringify(response.data) })
             })
@@ -87,6 +87,8 @@ export default class StatTable extends React.Component {
 
         var obj2 = JSON.parse(this.state.Prediction)
         await this.setState({ Prediction: obj2 })
+
+        console.log(this.state.Prediction)
 
         var arr = []
         var obj = JSON.parse(this.state.p)
@@ -149,7 +151,7 @@ export default class StatTable extends React.Component {
             })
 
 
-  
+        console.log(this.state.Winning)
         var arr = []
         var obj = JSON.parse(this.state.Winning)
         var PlayerList = Object.keys(obj)
@@ -498,7 +500,7 @@ export default class StatTable extends React.Component {
                                     <div>
 
                                     <h1 style={{ textAlign: 'center' }}>Matchup Predictions</h1>
-                                    <h6 style={{ textAlign: 'center' }}>pls dont take these seriously im dumb</h6>
+                                    <h6 style={{ textAlign: 'center' }}>FG% and FT% are off this week because of Bye last week</h6>
 
 
                                         
