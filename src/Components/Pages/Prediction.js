@@ -1,10 +1,9 @@
 
 import React from 'react'
-import { Image, Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown, Jumbotron, ListGroup, CardDeck, CardColumns, ListGroupItem } from 'react-bootstrap'
+import { Card, ListGroup, CardColumns } from 'react-bootstrap'
 import axios from 'axios'
-import "../PageStyle.css"
-import PlayerData from "../PlayerData.json"
-import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
+import "../../styles/PageStyle.css"
+
 
 export default class Prediction extends React.Component {
     constructor(props) {
@@ -35,7 +34,7 @@ export default class Prediction extends React.Component {
 
         var obj2 = JSON.parse(this.state.PredictionResponse)
         await this.setState({ Prediction: obj2 })
-        console.log(this.state.Prediction)
+
     }
 
 

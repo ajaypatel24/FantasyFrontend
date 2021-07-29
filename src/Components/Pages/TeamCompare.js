@@ -1,10 +1,10 @@
 
 import React from 'react'
-import { Image, Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown, Jumbotron, ListGroup, CardDeck, CardColumns, ListGroupItem } from 'react-bootstrap'
+import { Image, Card, CardGroup, Col, Row, Badge, DropdownButton, Dropdown, ListGroup } from 'react-bootstrap'
 import axios from 'axios'
-import "../PageStyle.css"
-import PlayerData from "../PlayerData.json"
-import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
+import "../../styles/PageStyle.css"
+import PlayerData from "../../PlayerData/PlayerData.json"
+
 
 export default class TeamCompare extends React.Component {
     constructor(props) {
@@ -19,10 +19,6 @@ export default class TeamCompare extends React.Component {
             Winning: [],
             AllData: this.props.TeamCompareInformation[0],
             WinningHolder: []
-            //LeaderPlayer
-            //player
-            //TopPlayers
-            //PlayerName
 
         };
 
@@ -59,8 +55,6 @@ export default class TeamCompare extends React.Component {
         await this.setState({ Winning: arr })
         await this.setState({ LeaderPlayer: PlayerList })
 
-        console.log(this.state.Winning)
-        console.log(this.state.LeaderPlayer)
 
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
@@ -82,14 +76,13 @@ export default class TeamCompare extends React.Component {
         await this.setState({ AllLeader: arr })
         await this.setState({ Categories: cat })
 
-        console.log(this.state.AllLeader)
-        console.log(this.state.Categories)
+
 
     }
 
     async topPerformers(team) {
         var bodyFormData = new FormData();
-        console.log(team)
+
         bodyFormData.append("team", JSON.stringify(team))
 
         await axios.post('/TopPerformers', bodyFormData)
@@ -97,12 +90,8 @@ export default class TeamCompare extends React.Component {
                 this.setState({ TopPlayers: JSON.stringify(response.data) })
             })
 
-        console.log(this.state.TopPlayers)
-        var obj = JSON.parse(this.state.TopPlayers)
-        console.log(obj)
 
-        console.log(this.state.AllLeader)
-        //console.log(this.state.Categories)
+        var obj = JSON.parse(this.state.TopPlayers)
         var ranking = {}
         for (var i = 0; i < this.state.AllLeader.length - 1; i++) {
             if (this.state.Categories[i].valueOf() === new String("FG%").valueOf() || this.state.Categories[i].valueOf() === new String("FT%").valueOf()) {
@@ -118,11 +107,11 @@ export default class TeamCompare extends React.Component {
 
         }
 
-        console.log(ranking)
+
 
         ranking = Object.entries(ranking).sort((a, b) => a[1] - b[1]).map(el => el[0])
 
-        console.log(ranking)
+
 
         var topThreePlayers = []
         for (var x = 0; x < 3; x++) {
@@ -132,9 +121,7 @@ export default class TeamCompare extends React.Component {
         }
 
 
-        console.log(topThreePlayers)
 
-        console.log(obj)
 
 
 
@@ -158,14 +145,12 @@ export default class TeamCompare extends React.Component {
             PlayerNameArray.push(topThreePlayers[y]["PlayerFirst"] + " " + topThreePlayers[y]["PlayerLast"])
         }
 
-        console.log(typeof (ImgString))
+
 
         await this.setState({ TopPlayers: ImgString })
         await this.setState({ PlayerName: PlayerNameArray })
 
-        console.log(typeof (this.state.TopPlayers))
 
-        console.log(PlayerData["league"]["standard"][0]["firstName"])
 
 
 
@@ -173,11 +158,10 @@ export default class TeamCompare extends React.Component {
 
     async assignPlayer(player1, i) {
         await this.setState({ player: [player1, i] })
-        console.log(this.state.Winning[this.state.player[1]][this.state.player[0]])
-        console.log(this.state.player[0])
+
         await this.topPerformers(this.state.player[0])
 
-        console.log(this.state.TopPlayers)
+
     }
 
 

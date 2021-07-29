@@ -31,7 +31,7 @@ export default class Maintainance extends React.Component {
                         <Row>
 
                             <Col lg={{ span: 6, offset: 3 }}>
-                                <Image src={mickey} width="100%" fluid />
+                                
                             </Col>
 
                         </Row>

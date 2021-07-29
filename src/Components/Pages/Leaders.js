@@ -1,10 +1,9 @@
 
 import React from 'react'
-import { Image, Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown, Jumbotron, ListGroup, CardDeck, CardColumns, ListGroupItem } from 'react-bootstrap'
+import { Card, CardGroup, Table } from 'react-bootstrap'
 import axios from 'axios'
-import "../PageStyle.css"
-import PlayerData from "../PlayerData.json"
-import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
+import "../../styles/PageStyle.css"
+
 
 export default class Leaders extends React.Component {
     constructor(props) {
@@ -38,19 +37,15 @@ export default class Leaders extends React.Component {
 
         var arr = []
         var cat = []
-        var obj = JSON.parse(this.state.Leaders)
+        var leadersJsonObject = JSON.parse(this.state.Leaders)
 
-        for (var i in obj) {
+        for (var i in leadersJsonObject) {
             cat.push(i)
-            arr.push(obj[i])
+            arr.push(leadersJsonObject[i])
         }
 
         await this.setState({ AllLeader: arr })
         await this.setState({ Categories: cat })
-
-        console.log(this.state.AllLeader)
-        console.log(this.state.Categories)
-
 
 
     }

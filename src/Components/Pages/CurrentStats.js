@@ -1,10 +1,9 @@
 
 import React from 'react'
-import { Image, Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown, Jumbotron, ListGroup, CardDeck, CardColumns, ListGroupItem } from 'react-bootstrap'
-import axios from 'axios'
-import "../PageStyle.css"
-import PlayerData from "../PlayerData.json"
-import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
+import { Table } from 'react-bootstrap'
+
+import "../../styles/PageStyle.css"
+
 
 export default class CurrentStats extends React.Component {
     constructor(props) {
@@ -25,12 +24,6 @@ export default class CurrentStats extends React.Component {
 
     }
 
-
-    async componentDidMount() {
-        console.log(this.state.Categories)
-        console.log(this.state.dataArray)
-        console.log(this.state.Players)
-    }
 
     render() {
 
