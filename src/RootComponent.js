@@ -1,15 +1,13 @@
 
 import React from 'react'
-import { Image, Spinner, Card, CardGroup, Container, Button, Table, ButtonGroup, Nav, Navbar, Form, FormControl, ToggleButton, Col, Row, Badge, Alert, DropdownButton, Dropdown, Jumbotron, ListGroup, CardDeck, CardColumns, ListGroupItem } from 'react-bootstrap'
+import { Container, Button, Nav, Navbar, Col, Row, Spinner } from 'react-bootstrap'
 import axios from 'axios'
-import "./PageStyle.css"
-import PlayerData from "./PlayerData.json"
-import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
-import { HashRouter, Redirect, Route, Switch, Link } from 'react-router-dom'
-import Leaders from "./Components/Leaders"
-import Prediction from "./Components/Prediction"
-import TeamCompare from "./Components/TeamCompare"
-import CurrentStats from "./Components/CurrentStats"
+import "./styles/PageStyle.css"
+import { HashRouter, Route, Switch } from 'react-router-dom'
+import Leaders from "./Components/Pages/Leaders"
+import Prediction from "./Components/Pages/Prediction"
+import TeamCompare from "./Components/Pages/TeamCompare"
+import CurrentStats from "./Components/Pages/CurrentStats"
 
 
 export default class RootComponent extends React.Component {
@@ -18,25 +16,12 @@ export default class RootComponent extends React.Component {
 
         this.state = {
 
-            p: "",
-            player: "",
-            TopPlayers: [],
+            rawDataFromResponse: "",
             dataArray: [],
-            PlayerName: [],
             Players: [],
             Categories: [],
             AllData: [],
-            Leaders: [],
-            f: [],
-            Prediction: [],
-            Winning: [],
-            Integer: 1,
-            LeaderPlayer: [],
-            AccessBoolean: [false, false, false, false],
             LoadingButton: true,
-            AllLeader: [],
-            keys: [],
-            Tester: []
 
         };
 
@@ -52,46 +37,31 @@ export default class RootComponent extends React.Component {
 
         await axios.get('/test')
             .then(response => {
-                this.setState({ p: JSON.stringify(response.data) })
+                this.setState({ rawDataFromResponse: JSON.stringify(response.data) })
             })
-
-
-        await axios.get('/prediction-fast')
-            .then(response => {
-                this.setState({ Prediction: JSON.stringify(response.data) })
-            })
-
-
-        var obj2 = JSON.parse(this.state.Prediction)
-        await this.setState({ Prediction: obj2 })
 
         var arr = []
-        var obj = JSON.parse(this.state.p)
-        var g = Object.keys(obj)
+        var obj = JSON.parse(this.state.rawDataFromResponse)
+        var dataKeySet = Object.keys(obj)
 
         var catArray = []
 
-        for (var i in g) {
+        for (var key in dataKeySet) {
             var w = {}
-            w[g[i]] = obj[g[i]]
+            w[dataKeySet[key]] = obj[dataKeySet[key]]
             arr.push(w)
         }
 
-        this.setState({ AllData: arr })
+        await this.setState({ AllData: arr })
 
-        for (var x in (arr[0][g[0]])) {
+        for (var x in (arr[0][dataKeySet[0]])) {
             catArray.push(x)
         }
 
-        console.log(JSON.stringify(this.state.AllData))
+        await this.setState({ Players: dataKeySet })
+        await this.setState({ dataArray: arr })
+        await this.setState({ Categories: catArray })
 
-        this.setState({ Players: g })
-        this.setState({ dataArray: arr })
-        this.setState({ Categories: catArray })
-        var accessArr = [true, false, false, false]
-        await this.setState({
-            AccessBoolean: accessArr,
-        })
 
         this.setState({
             LoadingButton: false
@@ -169,9 +139,7 @@ export default class RootComponent extends React.Component {
                     <Col>
                         <Row>
                             {
-                                this.state.dataArray.length !== 0 &&
-                                    this.state.Players.length !== 0 &&
-                                    this.state.Categories.length !== 0 ?
+                                this.state.LoadingButton === false ?
 
 
                                     <HashRouter>
@@ -194,7 +162,7 @@ export default class RootComponent extends React.Component {
 
                                     :
 
-                                    null
+                                    <Spinner animation="border" />
 
                             }
 
