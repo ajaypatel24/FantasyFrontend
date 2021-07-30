@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Image, Card, CardGroup, Col, Row, Badge, DropdownButton, Dropdown, ListGroup } from 'react-bootstrap'
+import { Image, Col, Row, Badge, ListGroup, Tab, Accordion } from 'react-bootstrap'
 import axios from 'axios'
 import "../../styles/PageStyle.css"
 import PlayerData from "../../PlayerData/PlayerData.json"
@@ -15,70 +15,78 @@ export default class TeamCompare extends React.Component {
             LeaderPlayer: [],
             player: [],
             TopPlayers: [],
+            TopCategories: [],
             PlayerName: [],
             Winning: [],
             AllData: this.props.TeamCompareInformation[0],
-            WinningHolder: []
+            WinningHolder: [],
+            loadingComplete: false
 
         };
 
-
-
     }
 
-    async componentDidMount() {
+    async componentDidMount() { //get all data needed
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
         await axios.post('/winning-matchups', bodyFormData)
 
             .then((response) => {
-
                 this.setState({ WinningHolder: JSON.stringify(response.data) })
             })
 
-
-
-
-        var arr = []
-        var obj = JSON.parse(this.state.WinningHolder)
-        var PlayerList = Object.keys(obj)
-
-
-        for (var i in PlayerList) {
-            var x = {}
-
-            x[PlayerList[i]] = obj[PlayerList[i]]
-            arr.push(x)
-        }
-
-        await this.setState({ Winning: arr })
-        await this.setState({ LeaderPlayer: PlayerList })
-
-
-        var bodyFormData = new FormData();
-        bodyFormData.append("data", JSON.stringify(this.state.AllData))
         await axios.post('/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ Leaders: JSON.stringify(response.data) })
             })
 
-        var arr = []
-        var cat = []
-        var obj = JSON.parse(this.state.Leaders)
 
-        for (var i in obj) {
-            cat.push(i)
-            arr.push(obj[i])
+        var arr = [] //usable object that can be mapped
+        var obj = JSON.parse(this.state.WinningHolder)
+        var PlayerList = Object.keys(obj)
+
+
+        for (var i in PlayerList) {
+            var x = {}
+            x[PlayerList[i]] = obj[PlayerList[i]]
+            arr.push(x)
+        }
+
+
+        await this.setState({ Winning: arr })
+        await this.setState({ LeaderPlayer: PlayerList })
+
+        arr = []
+        var leaderKeys = JSON.parse(this.state.Leaders)
+        var categoryArray = []
+
+
+        for (var i in leaderKeys) {
+            categoryArray.push(i)
+            arr.push(leaderKeys[i])
         }
 
         await this.setState({ AllLeader: arr })
-        await this.setState({ Categories: cat })
+        await this.setState({ Categories: categoryArray })
 
+
+        await this.setState({ WinningHolder: [] })
+        var tempArray = []
+        this.state.Winning.map((item, i) => {
+            tempArray.push(item[this.state.LeaderPlayer[i]].length)
+        })
+
+        await this.setState({ WinningHolder: tempArray })
+
+        await this.assignPlayer(this.state.LeaderPlayer[0], 0)
+        await this.setState({ loadingComplete: true })
 
 
     }
+
+
 
     async topPerformers(team) {
         var bodyFormData = new FormData();
@@ -89,7 +97,6 @@ export default class TeamCompare extends React.Component {
             .then(response => {
                 this.setState({ TopPlayers: JSON.stringify(response.data) })
             })
-
 
         var obj = JSON.parse(this.state.TopPlayers)
         var ranking = {}
@@ -104,63 +111,47 @@ export default class TeamCompare extends React.Component {
                 }
             }
 
-
         }
-
-
 
         ranking = Object.entries(ranking).sort((a, b) => a[1] - b[1]).map(el => el[0])
 
-
-
         var topThreePlayers = []
+        var topThreeCategories = []
+
         for (var x = 0; x < 3; x++) {
             topThreePlayers.push(obj[ranking[x]])
-
-            obj[ranking[x]]["Category"] = ranking[x]
+            topThreeCategories.push(ranking[x])
         }
-
-
-
-
-
 
         var ImgString = []
         var PlayerNameArray = []
         var playerId = []
-        for (var t = 0; t < topThreePlayers.length; t++) {
+        for (var t = 0; t < topThreePlayers.length; t++) { //find all player images
             for (var i = 0; i < PlayerData["league"]["standard"].length; i++) {
-                if (PlayerData["league"]["standard"][i]["firstName"] === topThreePlayers[t]["PlayerFirst"]) {
+                if (PlayerData["league"]["standard"][i]["firstName"] === topThreePlayers[t]["PlayerFirst"]
+                    && PlayerData["league"]["standard"][i]["lastName"] === topThreePlayers[t]["PlayerLast"]) {
                     playerId.push(PlayerData["league"]["standard"][i]["personId"])
                     break
                 }
             }
         }
 
-
-
-        for (var y = 0; y < topThreePlayers.length; y++) {
+        for (var y = 0; y < topThreePlayers.length; y++) { //build image src strings
             let val = "https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/" + playerId[y] + ".png"
             ImgString.push(val)
             PlayerNameArray.push(topThreePlayers[y]["PlayerFirst"] + " " + topThreePlayers[y]["PlayerLast"])
         }
 
-
-
         await this.setState({ TopPlayers: ImgString })
         await this.setState({ PlayerName: PlayerNameArray })
-
-
-
-
+        await this.setState({ TopCategories: topThreeCategories })
 
     }
 
     async assignPlayer(player1, i) {
+
         await this.setState({ player: [player1, i] })
-
         await this.topPerformers(this.state.player[0])
-
 
     }
 
@@ -171,127 +162,137 @@ export default class TeamCompare extends React.Component {
 
         return (
 
-
-
             <div>
-                <h1 style={{ textAlign: 'center' }}>Is your Team Bad?</h1>
+
                 <div>
 
+                    {this.state.loadingComplete === true ?
+                        <Tab.Container defaultActiveKey={this.state.LeaderPlayer[0]}>
+                            <Row>
+                                <Col sm={3}>
 
+                                    <ListGroup>
 
+                                        {this.state.Winning.map((item, i) => {
+                                            return (
 
-                    <DropdownButton title="Select Team">
-                        {this.state.Winning.map((item, i) => {
-                            return (
-                                <Dropdown.Item eventKey={this.state.LeaderPlayer[i]} onClick={() => this.assignPlayer(this.state.LeaderPlayer[i], i)}>{this.state.LeaderPlayer[i]}</Dropdown.Item>
-                            )
-                        })}
-                    </DropdownButton>
+                                                <ListGroup.Item eventKey={this.state.LeaderPlayer[i]} onClick={() => this.assignPlayer(this.state.LeaderPlayer[i], i)}><h3>{this.state.LeaderPlayer[i]}</h3></ListGroup.Item>
 
+                                            )
+                                        })}
+                                    </ListGroup>
+                                </Col>
 
-                    {this.state.player != "" ?
+                                <Col sm={9}>
 
-                        <div>
+                                    <Tab.Content>
 
+                                        <div>
 
-                            <Badge className="OtherTeam" variant="secondary" style={{ fontSize: '1.2rem' }}>{this.state.player[0]} : {this.state.player[1]} Teams</Badge>
+                                            {this.state.TopPlayers.length !== 0 ?
 
+                                                <Row>
 
-                            <div>
+                                                    <Col>
 
-                                {this.state.TopPlayers.length !== 0 ?
+                                                        <Row>
 
-                                    <Row>
-                                        <Col>
-                                            <Row>
-                                                <Col lg={4} xs={6} md={4}>
+                                                        </Row>
+                                                        <Row>
+                                                            <h4>Top Performers {this.state.player[0]}</h4>
 
-                                                    <Image src={this.state.TopPlayers[0]} fluid />
-                                                    <figcaption>{this.state.PlayerName[0]}</figcaption>
-                                                </Col>
-                                                <Col lg={4} xs={6} md={4}>
-                                                    <Image src={this.state.TopPlayers[1]} fluid />
-                                                    <figcaption>{this.state.PlayerName[1]}</figcaption>
-                                                </Col>
-                                                <Col lg={4} xs={6} md={4}>
-                                                    <Image src={this.state.TopPlayers[2]} fluid />
-                                                    <figcaption>{this.state.PlayerName[2]}</figcaption>
-                                                </Col>
-                                            </Row>
+                                                        </Row>
+                                                        <br />
+                                                        <Row className="align-items-center">
+                                                            {[0, 1, 2].map((index, i) => {
+                                                                return (
+                                                                    <Col>
 
-                                            <Row>
-                                                <ListGroup horizontal>
+                                                                        <Col>
+                                                                            <Badge style={{ fontSize: '1.2rem' }} bg="secondary">{this.state.TopCategories[i]}</Badge>
+                                                                        </Col>
+                                                                        <Row>
+                                                                            <Image height='50%'
+                                                                                width='50%' style={{ alignSelf: 'center' }} src={this.state.TopPlayers[i]} />
+                                                                            <figcaption style={{ textAlign: 'center', fontSize: '1.7rem' }}>{this.state.PlayerName[i]}</figcaption>
 
+                                                                        </Row>
 
+                                                                    </Col>
+                                                                )
+                                                            })}
 
+                                                        </Row>
 
+                                                        <Row>
+                                                            <Col >
 
-
-
-                                                    {this.state.Winning[this.state.player[1]][this.state.player[0]].map((item, i) => {
-
-                                                        return (
-                                                            <CardGroup class="col d-flex justify-content-center">
-
-                                                                {[Object.keys(item)].map((q, x) => {
+                                                                <h2>{this.state.Winning[this.state.player[1]][this.state.player[0]].length} Winning Matchups </h2>
+                                                                {this.state.Winning[this.state.player[1]][this.state.player[0]].map((item, i) => {
 
                                                                     return (
-                                                                        <Card style={{ width: '18rem' }}>
-                                                                            <Card.Header>{q}</Card.Header>
+                                                                        <Accordion>
 
-                                                                            <Card.Body>
 
-                                                                                {item[q].map((r, c) => {
-                                                                                    return (
-                                                                                        <p>{r}</p>
-                                                                                    )
-                                                                                })}
+                                                                            {[Object.keys(item)].map((q, x) => {
 
-                                                                            </Card.Body>
+                                                                                return (
 
-                                                                        </Card>
+                                                                                    <Accordion.Item eventKey="q">
+                                                                                        <Accordion.Header><h5>{q} : {item[q].length}</h5></Accordion.Header>
+                                                                                        <Accordion.Body>
 
+
+
+
+
+                                                                                            {item[q].map((r, c) => {
+                                                                                                return (
+                                                                                                    <p>{r}</p>
+                                                                                                )
+                                                                                            })}
+
+
+
+
+                                                                                        </Accordion.Body>
+                                                                                    </Accordion.Item>
+
+                                                                                )
+                                                                            })}
+
+
+                                                                        </Accordion>
                                                                     )
                                                                 })}
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                </Row>
 
-                                                            </CardGroup>
-                                                        )
-                                                    })}
-                                                </ListGroup>
-                                            </Row>
-                                        </Col>
-                                    </Row>
+                                                :
 
-                                    :
+                                                null
 
-                                    <p></p>
+                                            }
 
+                                        </div>
 
-                                }
+                                    </Tab.Content>
 
+                                </Col>
 
-
-                            </div>
-
-
-
-
-
-                        </div>
+                            </Row>
+                        </Tab.Container>
 
 
                         :
 
-                        <span></span>
-
+                        null
                     }
-
-
-
                 </div>
+
             </div>
-
-
 
         );
     };

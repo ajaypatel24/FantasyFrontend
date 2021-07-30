@@ -2,8 +2,9 @@
 import './styles/App.css';
 import React from 'react'
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import RootComponent from './RootComponent';
+
 
 class App extends React.Component {
   state = {
@@ -20,7 +21,10 @@ class App extends React.Component {
             <RootComponent></RootComponent>
         
       </div>
+      
     )
+
+    
   }
 
 }
