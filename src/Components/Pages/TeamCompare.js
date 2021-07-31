@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Image, Col, Row, Badge, ListGroup, Tab, Accordion } from 'react-bootstrap'
+import { Image, Col, Row, Badge, ListGroup, Tab, Accordion, Figure, Alert } from 'react-bootstrap'
 import axios from 'axios'
 import "../../styles/PageStyle.css"
 import PlayerData from "../../PlayerData/PlayerData.json"
@@ -176,7 +176,7 @@ export default class TeamCompare extends React.Component {
                                         {this.state.Winning.map((item, i) => {
                                             return (
 
-                                                <ListGroup.Item eventKey={this.state.LeaderPlayer[i]} onClick={() => this.assignPlayer(this.state.LeaderPlayer[i], i)}><h3>{this.state.LeaderPlayer[i]}</h3></ListGroup.Item>
+                                                <ListGroup.Item eventKey={this.state.LeaderPlayer[i]} onClick={() => this.assignPlayer(this.state.LeaderPlayer[i], i)}><h4>{this.state.LeaderPlayer[i]}</h4></ListGroup.Item>
 
                                             )
                                         })}
@@ -199,7 +199,7 @@ export default class TeamCompare extends React.Component {
 
                                                         </Row>
                                                         <Row>
-                                                            <h4>Top Performers {this.state.player[0]}</h4>
+                                                            <h4>Top Performers</h4>
 
                                                         </Row>
                                                         <br />
@@ -212,10 +212,11 @@ export default class TeamCompare extends React.Component {
                                                                             <Badge style={{ fontSize: '1.2rem' }} bg="secondary">{this.state.TopCategories[i]}</Badge>
                                                                         </Col>
                                                                         <Row>
-                                                                            <Image height='50%'
-                                                                                width='50%' style={{ alignSelf: 'center' }} src={this.state.TopPlayers[i]} />
-                                                                            <figcaption style={{ textAlign: 'center', fontSize: '1.7rem' }}>{this.state.PlayerName[i]}</figcaption>
-
+                                                                            <Figure>
+                                                                                <Figure.Image height='80%'
+                                                                                    width='80%' style={{ alignSelf: 'center' }} src={this.state.TopPlayers[i]} />
+                                                                                <figcaption style={{ fontSize: '1rem' }}><strong>{this.state.PlayerName[i]}</strong></figcaption>
+                                                                            </Figure>
                                                                         </Row>
 
                                                                     </Col>
@@ -226,8 +227,15 @@ export default class TeamCompare extends React.Component {
 
                                                         <Row>
                                                             <Col >
-
-                                                                <h2>{this.state.Winning[this.state.player[1]][this.state.player[0]].length} Winning Matchups </h2>
+                                                                <br />
+                                                                
+                                                                <Alert variant="primary">
+                                                                    <Alert.Heading>
+                                                                    {this.state.Winning[this.state.player[1]][this.state.player[0]].length} Winning Matchups 
+                                                                    </Alert.Heading>
+                                                                </Alert>
+                                                                
+                                                                
                                                                 {this.state.Winning[this.state.player[1]][this.state.player[0]].map((item, i) => {
 
                                                                     return (
