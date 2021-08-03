@@ -25,13 +25,13 @@ export default class Leaders extends React.Component {
     async componentDidMount() {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
-        await axios.post('/win-calculator', bodyFormData)
+        await axios.post('https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ Leaders: JSON.stringify(response.data) })
             })
 
-        await axios.get('/team-photo')
+        await axios.get('https://react-flask-fantasy.herokuapp.com/team-photo')
 
             .then((response) => {
                 this.setState({ TeamPhotos: JSON.stringify(response.data) })

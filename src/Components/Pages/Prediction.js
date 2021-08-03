@@ -21,7 +21,7 @@ export default class Prediction extends React.Component {
 
 
     async componentDidMount() {
-        await axios.get('/prediction-fast')
+        await axios.get('https://react-flask-fantasy.herokuapp.com/prediction-fast')
             .then(response => {
                 this.setState({ PredictionResponse: JSON.stringify(response.data) })
             })

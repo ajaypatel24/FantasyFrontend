@@ -34,13 +34,13 @@ export default class TeamCompare extends React.Component {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
-        await axios.post('/winning-matchups', bodyFormData)
+        await axios.post('https://react-flask-fantasy.herokuapp.com/winning-matchups', bodyFormData)
 
             .then((response) => {
                 this.setState({ WinningHolder: JSON.stringify(response.data) })
             })
 
-        await axios.post('/win-calculator', bodyFormData)
+        await axios.post('https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ Leaders: JSON.stringify(response.data) })
@@ -97,7 +97,7 @@ export default class TeamCompare extends React.Component {
 
         bodyFormData.append("team", JSON.stringify(team))
 
-        await axios.post('/TopPerformers', bodyFormData)
+        await axios.post('https://react-flask-fantasy.herokuapp.com/TopPerformers', bodyFormData)
             .then(response => {
                 this.setState({ TopPlayers: JSON.stringify(response.data) })
             })
