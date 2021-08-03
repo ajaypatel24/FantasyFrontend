@@ -1,11 +1,10 @@
 
 import React from 'react'
 import { Container, Button, Nav, Navbar, Col, Row, Image, Badge } from 'react-bootstrap'
-import "./PageStyle.css"
-import mickey from './lemickey.jpeg'
-import KAT from './KAT.png'
+import "../../styles/PageStyle.css"
+import caruso from "../../caruso.jpeg"
 
-export default class Maintainance extends React.Component {
+export default class Maintenance extends React.Component {
     
     render() {
 
@@ -14,24 +13,20 @@ export default class Maintainance extends React.Component {
 
 
             <div>
-                <>
-                    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                        <Navbar.Collapse id="responsive-navbar-nav">
-                            <Navbar.Brand>Fantasy Stat Track</Navbar.Brand>
-                        </Navbar.Collapse>
-                    </Navbar>
-
-                </>
-                <br />
+                
+                
 
                 <Container fluid>
                     <Col>
-
+                        <Row>
+                            <Col>
+                            <h1>Coming soon</h1>
+                            </Col>
+                        </Row>
                         <Row>
 
-                            <Col lg={{ span: 6, offset: 3 }}>
-                                
+                            <Col >
+                                <img src={caruso}/>
                             </Col>
 
                         </Row>

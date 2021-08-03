@@ -9,6 +9,7 @@ import Leaders from "./Components/Pages/Leaders"
 import Prediction from "./Components/Pages/Prediction"
 import TeamCompare from "./Components/Pages/TeamCompare"
 import CurrentStats from "./Components/Pages/CurrentStats"
+import Maintenance from "./Components/Maintenance/Maintenance"
 
 
 export default class RootComponent extends React.Component {
@@ -166,7 +167,11 @@ export default class RootComponent extends React.Component {
                                     :
 
                                     <Container fluid>
+                                        {/*
                                     <Spinner animation="border">  </Spinner>
+                                        */}
+
+                                        <Maintenance></Maintenance>
                                     </Container>
 
                             }
