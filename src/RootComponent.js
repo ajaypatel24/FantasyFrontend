@@ -3,6 +3,7 @@ import React from 'react'
 import { Container, Button, Nav, Navbar, Col, Row, Spinner } from 'react-bootstrap'
 import axios from 'axios'
 import "./styles/PageStyle.css"
+import "./styles/App.css"
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import Leaders from "./Components/Pages/Leaders"
 import Prediction from "./Components/Pages/Prediction"
@@ -116,8 +117,9 @@ export default class RootComponent extends React.Component {
 
 
             <div>
-                <>
+                
                     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+                        <Container fluid>
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                         <Navbar.Collapse id="responsive-navbar-nav">
                             <Navbar.Brand>Fantasy Stat Track</Navbar.Brand>
@@ -130,9 +132,10 @@ export default class RootComponent extends React.Component {
                             </Nav>
 
                         </Navbar.Collapse>
+                        </Container>
                     </Navbar>
 
-                </>
+                
                 <br />
 
                 <Container fluid>
@@ -162,7 +165,9 @@ export default class RootComponent extends React.Component {
 
                                     :
 
-                                    <Spinner animation="border" />
+                                    <Container fluid>
+                                    <Spinner animation="border">  </Spinner>
+                                    </Container>
 
                             }
 

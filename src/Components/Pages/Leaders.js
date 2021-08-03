@@ -81,7 +81,7 @@ export default class Leaders extends React.Component {
                             this.state.AllLeader.map((item, i) => {
 
                                 return (
-                                    <Tab eventKey={i} title={this.state.Categories[i]} Standings>
+                                    <Tab eventKey={i} title={<h6>{this.state.Categories[i]} Standings</h6>} >
 
 
 

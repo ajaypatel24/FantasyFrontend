@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Image, Col, Row, Badge, ListGroup, Tab, Accordion, Figure, Alert } from 'react-bootstrap'
+import { Image, Col, Row, Badge, ListGroup, Tab, Accordion, Figure, Alert, Button, Modal } from 'react-bootstrap'
 import axios from 'axios'
 import "../../styles/PageStyle.css"
 import PlayerData from "../../PlayerData/PlayerData.json"
@@ -20,10 +20,14 @@ export default class TeamCompare extends React.Component {
             Winning: [],
             AllData: this.props.TeamCompareInformation[0],
             WinningHolder: [],
-            loadingComplete: false
+            loadingComplete: false,
+            show: false,
+            name: ""
 
         };
 
+        this.handleClose = this.handleClose.bind(this);
+        this.handleOpen = this.handleOpen.bind(this);
     }
 
     async componentDidMount() { //get all data needed
@@ -155,6 +159,18 @@ export default class TeamCompare extends React.Component {
 
     }
 
+    async test() {
+        console.log("working")
+    }
+
+    async handleClose() {
+        await this.setState({ show: false })
+    }
+
+    async handleOpen(playerName) {
+        await this.setState({ show: true })
+        await this.setState({ name: playerName })
+    }
 
 
     render() {
@@ -215,10 +231,22 @@ export default class TeamCompare extends React.Component {
                                                                             <Figure>
                                                                                 <Figure.Image height='80%'
                                                                                     width='80%' style={{ alignSelf: 'center' }} src={this.state.TopPlayers[i]} />
-                                                                                <figcaption style={{ fontSize: '1rem' }}><strong>{this.state.PlayerName[i]}</strong></figcaption>
+                                                                                <figcaption style={{ fontSize: '1rem' }}><Button onClick={() => this.handleOpen(this.state.PlayerName[i])}>{this.state.PlayerName[i]}</Button></figcaption>
                                                                             </Figure>
                                                                         </Row>
 
+
+                                                                        <Modal show={this.state.show} onHide={this.handleClose}>
+                                                                            <Modal.Header closeButton>
+                                                                                <Modal.Title>{this.state.name}</Modal.Title>
+                                                                            </Modal.Header>
+                                                                            <Modal.Body>Player stats coming soon</Modal.Body>
+                                                                            <Modal.Footer>
+                                                                                <Button variant="secondary" onClick={this.handleClose}>
+                                                                                    Close
+                                                                                </Button>
+                                                                            </Modal.Footer>
+                                                                        </Modal>
                                                                     </Col>
                                                                 )
                                                             })}
@@ -228,14 +256,14 @@ export default class TeamCompare extends React.Component {
                                                         <Row>
                                                             <Col >
                                                                 <br />
-                                                                
+
                                                                 <Alert variant="primary">
                                                                     <Alert.Heading>
-                                                                    {this.state.Winning[this.state.player[1]][this.state.player[0]].length} Winning Matchups 
+                                                                        {this.state.Winning[this.state.player[1]][this.state.player[0]].length} Winning Matchups
                                                                     </Alert.Heading>
                                                                 </Alert>
-                                                                
-                                                                
+
+
                                                                 {this.state.Winning[this.state.player[1]][this.state.player[0]].map((item, i) => {
 
                                                                     return (
