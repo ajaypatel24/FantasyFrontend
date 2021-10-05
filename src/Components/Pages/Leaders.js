@@ -38,7 +38,6 @@ export default class Leaders extends React.Component {
             })
 
         if (this.state.TeamPhotos === null) {
-
             await axios.get(process.env.REACT_APP_URI_ENDPOINT + '/team-photo')
 
                 .then((response) => {
@@ -49,7 +48,6 @@ export default class Leaders extends React.Component {
             var teamPhotoObject = {}
             for (var team in teamPhotosJsonObject) { //build teamPhotoObject to use as state {TeamName : PhotoURL}
 
-
                 teamPhotoObject[team] = teamPhotosJsonObject[team]
             }
 
@@ -59,7 +57,6 @@ export default class Leaders extends React.Component {
         var teamRankingByCategory = []
         var category = []
         var leadersJsonObject = JSON.parse(this.state.Leaders)
-
 
 
         for (var categoryName in leadersJsonObject) {
@@ -76,7 +73,6 @@ export default class Leaders extends React.Component {
 
     async assignIndex(i) { //change Category table according to selected tab
         await this.setState({ selectedIndex: i });
-
     }
 
 
@@ -107,16 +103,8 @@ export default class Leaders extends React.Component {
 
 
 
-
                                 <Col sm={9} >
                                     <Tab.Content>
-
-                                                        return (
-                                                            <ListGroup.Item eventKey={this.state.Categories[i]} onClick={() => this.assignIndex(i)}><h4>{this.state.Categories[i]} Standings</h4> </ListGroup.Item>
-                                                        )
-                                                    })}
-                                                </ListGroup>
-                                            </Col>
 
 
                                         <Table striped bordered hover>
@@ -141,12 +129,11 @@ export default class Leaders extends React.Component {
                                             {
                                                 this.state.AllLeader[this.state.selectedIndex].map((teamAndScore, i) => {
 
-
                                                     return (
 
                                                         <tbody>
 
-
+                                                            <tr>
 
                                                                 {i === 0 ?
                                                                     <td><i><h2><strong>{teamAndScore[0]}</strong></h2> </i></td>
@@ -169,40 +156,13 @@ export default class Leaders extends React.Component {
 
 
 
-                                                            
-
-
-
-
-                                                        </tbody>
-                                                        
-                                                            )
-                                                        })}
-                                                        </Table>
-
-                                                        </div>
-                                                    
-                                                </Tab.Content>
-
-                                            </Col>
-
-
-                                        </Row>
-                                    </Tab.Container>
-
-                                
-
-
                                     </Tab.Content>
-
 
                                 </Col>
 
 
-
                             </Row>
                         </Tab.Container>
-
 
                     </div>
 
