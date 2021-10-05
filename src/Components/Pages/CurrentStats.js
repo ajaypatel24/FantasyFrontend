@@ -10,6 +10,9 @@ export default class CurrentStats extends React.Component {
         super(props);
 
 
+        //Categories being used in league
+        //Player team names
+        //DataArray: Team statistics for a given team, value of all categories
         this.state = {
 
 
@@ -20,10 +23,9 @@ export default class CurrentStats extends React.Component {
 
         };
 
-
-
     }
 
+    
 
     render() {
 
@@ -34,8 +36,6 @@ export default class CurrentStats extends React.Component {
 
                 <h1 style={{ textAlign: 'center' }}>Current Week Stats by Team</h1>
 
-
-
                 <Table className="StatTable" responsive>
                     {this.state.dataArray.map((item, i) => {
                         return (
@@ -43,9 +43,9 @@ export default class CurrentStats extends React.Component {
                             <Table bordered >
                                 <td><strong>{this.state.Players[i]}</strong></td>
 
-                                {this.state.Categories.map((cat, x) =>
+                                {this.state.Categories.map((category, x) =>
                                     <td>
-                                        <strong>{cat}</strong>
+                                        <strong>{category}</strong>
                                     </td>
                                 )}
                                 <tbody>
@@ -54,12 +54,10 @@ export default class CurrentStats extends React.Component {
 
 
                                         <td></td>
-                                        {this.state.Categories.map((cat, x) =>
-
-
+                                        {this.state.Categories.map((category, x) =>
 
                                             <td>
-                                                {item[this.state.Players[i]][cat]}
+                                                {item[this.state.Players[i]][category]}
                                             </td>
 
                                         )}
@@ -79,6 +77,8 @@ export default class CurrentStats extends React.Component {
                     }
 
                 </Table>
+
+
 
 
             </div>

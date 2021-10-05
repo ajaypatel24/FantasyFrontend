@@ -37,7 +37,7 @@ export default class RootComponent extends React.Component {
 
     async componentDidMount() {
 
-        await axios.get('https://react-flask-fantasy.herokuapp.com/test')
+        await axios.get(process.env.REACT_APP_URI_ENDPOINT +'/test')
             .then(response => {
                 this.setState({ rawDataFromResponse: JSON.stringify(response.data) })
             })
@@ -148,6 +148,7 @@ export default class RootComponent extends React.Component {
 
                                     <HashRouter>
                                         <Switch>
+                                            
                                             <Route exact path="/Leaders" render={(props) => (
                                                 <Leaders {...props} LeaderInformation={leaderInformation} />)}
                                             />
@@ -156,6 +157,7 @@ export default class RootComponent extends React.Component {
                                                 <TeamCompare {...props} TeamCompareInformation={teamCompareInformation} />)}
                                             />
                                             <Route exact path="/Prediction" component={Prediction} />
+
                                             <Route path="/" render={(props) => (
                                                 <CurrentStats {...props} CurrentStatInformation={currentStatInformation} />)}
                                             />
@@ -167,11 +169,11 @@ export default class RootComponent extends React.Component {
                                     :
 
                                     <Container fluid>
-                                        {/*
+                                        
                                     <Spinner animation="border">  </Spinner>
-                                        */}
+                                        
 
-                                        <Maintenance></Maintenance>
+                                        
                                     </Container>
 
                             }

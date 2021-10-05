@@ -2,6 +2,7 @@
 import React from 'react'
 import { Alert, Card, CardGroup, Table, Image, Accordion, Tabs, Tab, Figure, Col, Row, ListGroup, ListGroupItem } from 'react-bootstrap'
 import axios from 'axios'
+import teamPhoto from '../../PlayerData/TeamPhoto.json'
 import "../../styles/PageStyle.css"
 
 
@@ -16,15 +17,7 @@ export default class Leaders extends React.Component {
             Categories: [],
             AllData: this.props.LeaderInformation[1],
             Leaders: [],
-            TeamPhotos: {"David's Team": "https://s.yimg.com/cv/apiv2/default/nba/nba_6_d.png",
-            "Donutcic": "https://s.yimg.com/cv/apiv2/default/nba/nba_4_a.png",
-            "EMVBiid": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/d34dc6574f3f5e5f6469f030604b1fe2b77bf77a608a811d50da25330dfc6552.jpg",
-            "Feng's Unreal Team": "https://s.yimg.com/cv/apiv2/default/nba/nba_8_f.png",
-            "I stan curry uwu": "https://s.yimg.com/cv/apiv2/default/nba/nba_10_e.png",
-            "Joseph Ingles": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/643ae38a63b04c39c5a4e1d003db7f1ac88d7c7da4d6207c2c67d839053cc937.png",
-            "Kentuckyy": "https://s.yimg.com/cv/apiv2/default/nba/nba_6_k.png",
-            "Sufyan's Super Team": "https://s.yimg.com/cv/apiv2/default/nba/nba_2_s.png"
-            },
+            TeamPhotos: teamPhoto, //cached after pulled once
             Loading: true,
             selectedIndex: 0
 
@@ -33,55 +26,53 @@ export default class Leaders extends React.Component {
     }
 
     async componentDidMount() {
+
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
-        await axios.post('https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
+
+        //API call to get leaders of categories
+        await axios.post(process.env.REACT_APP_URI_ENDPOINT + '/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ Leaders: JSON.stringify(response.data) })
             })
 
         if (this.state.TeamPhotos === null) {
-        await axios.get('https://react-flask-fantasy.herokuapp.com/team-photo')
+            await axios.get(process.env.REACT_APP_URI_ENDPOINT + '/team-photo')
 
-            .then((response) => {
-                this.setState({ TeamPhotos: JSON.stringify(response.data) })
-            })
+                .then((response) => {
+                    this.setState({ TeamPhotos: JSON.stringify(response.data) })
+                })
 
-        var teamPhotosJsonObject = JSON.parse(this.state.TeamPhotos)
-        var holder = {}
-        for (var y in teamPhotosJsonObject) {
+            var teamPhotosJsonObject = JSON.parse(this.state.TeamPhotos)
+            var teamPhotoObject = {}
+            for (var team in teamPhotosJsonObject) { //build teamPhotoObject to use as state {TeamName : PhotoURL}
 
-            holder[y] = teamPhotosJsonObject[y]
+                teamPhotoObject[team] = teamPhotosJsonObject[team]
+            }
+
+            await this.setState({ TeamPhotos: teamPhotoObject })
+
         }
-
-        await this.setState({ TeamPhotos: holder })
-
-        }
-        var arr = []
-        var cat = []
+        var teamRankingByCategory = []
+        var category = []
         var leadersJsonObject = JSON.parse(this.state.Leaders)
-        
 
 
-        for (var i in leadersJsonObject) {
-            cat.push(i)
-            arr.push(leadersJsonObject[i])
+        for (var categoryName in leadersJsonObject) {
+            category.push(categoryName)
+            teamRankingByCategory.push(leadersJsonObject[categoryName])
         }
 
-        await this.setState({ AllLeader: arr })
-        await this.setState({ Categories: cat })
-
-        console.log(this.state.AllLeader);
-        
-
-        console.log(this.state.TeamPhotos)
+        await this.setState({ AllLeader: teamRankingByCategory })
+        await this.setState({ Categories: category })
         await this.setState({ Loading: false })
+
 
     }
 
-    async assignIndex(i) {
-        await this.setState({selectedIndex : i});
+    async assignIndex(i) { //change Category table according to selected tab
+        await this.setState({ selectedIndex: i });
     }
 
 
@@ -92,112 +83,86 @@ export default class Leaders extends React.Component {
 
             <div >
 
-                
                 {this.state.Loading === false ?
                     <div className="tableContent">
 
 
+                        <Tab.Container defaultActiveKey={this.state.Categories[0]}>
+                            <Row>
+                                <Col sm={3}>
+                                    <ListGroup justify>
+
+                                        {this.state.Categories.map((category, categoryIndex) => {
+
+                                            return (
+                                                <ListGroup.Item eventKey={category} onClick={() => this.assignIndex(categoryIndex)}><h4>{category} Standings</h4> </ListGroup.Item>
+                                            )
+                                        })}
+                                    </ListGroup>
+                                </Col>
 
 
 
-
-                        
-                                    <Tab.Container defaultActiveKey={this.state.Categories[0]}>
-                                        <Row>
-                                            <Col sm={3}>
-                                                <ListGroup justify>
-
-                                                    {this.state.AllLeader.map((item, i) => {
-
-                                                        return (
-                                                            <ListGroup.Item eventKey={this.state.Categories[i]} onClick={() => this.assignIndex(i)}><h4>{this.state.Categories[i]} Standings</h4> </ListGroup.Item>
-                                                        )
-                                                    })}
-                                                </ListGroup>
-                                            </Col>
+                                <Col sm={9} >
+                                    <Tab.Content>
 
 
+                                        <Table striped bordered hover>
+                                            <thead>
 
-                                            <Col  sm={9} >
-                                                <Tab.Content>
-                                                    
-                                                    <div>
-                                                    <Table striped bordered hover>
-                                                        <thead>
-                                                            <tr>
-                                                                
-                                                            </tr>
-                                                            <tr >
-                                                                <th colSpan="2">
-                                                                <h2> {this.state.Categories[this.state.selectedIndex]} Leader </h2>
-                                                                    <Figure>
+                                                <tr >
+                                                    <th colSpan="2">
+                                                        <h2> {this.state.Categories[this.state.selectedIndex]} Leader </h2>
+                                                        <Figure>
 
-                                                                        <Figure.Image height='100px'
-                                                                            width='100px' style={{ alignSelf: 'center' }} src={this.state.TeamPhotos[this.state.AllLeader[this.state.selectedIndex][0][0]]} thumbnail />
-                                                                        
+                                                            <Figure.Image height='100px'
+                                                                width='100px' style={{ alignSelf: 'center' }}
+                                                                src={this.state.TeamPhotos[this.state.AllLeader[this.state.selectedIndex][0][0]]}
+                                                                thumbnail />
 
-                                                                    </Figure>
-                                                                </th>
-                                                            </tr>
-                                                           
-                                                        </thead>
-                                                    {
-                                                        this.state.AllLeader[this.state.selectedIndex].map((item, i) => {
 
-                                                            return (
-                                                            
+                                                        </Figure>
+                                                    </th>
+                                                </tr>
 
+                                            </thead>
+                                            {
+                                                this.state.AllLeader[this.state.selectedIndex].map((teamAndScore, i) => {
+
+                                                    return (
 
                                                         <tbody>
 
+                                                            <tr>
 
-                                                         
+                                                                {i === 0 ?
+                                                                    <td><i><h2><strong>{teamAndScore[0]}</strong></h2> </i></td>
+                                                                    :
+                                                                    <td><h4>{teamAndScore[0]}</h4></td>
+                                                                }
+                                                                {i === 0 ?
 
-                                                                    <tr>
-
-                                                                        {i === 0 ?
-                                                                            <td><i><h2><strong>{item[0]}</strong></h2> </i></td>
-                                                                            :
-                                                                            <td><h4>{item[0]}</h4></td>
-                                                                        }
-                                                                        {i === 0 ?
-
-                                                                            <td><i><h2><strong>{item[1]}</strong></h2></i></td>
-                                                                            :
-                                                                            <td><h4>{item[1]}</h4></td>
-                                                                        }
-                                                                    </tr>
-
-
-
-
-                                                            
-
-
-
+                                                                    <td><i><h2><strong>{teamAndScore[1]}</strong></h2></i></td>
+                                                                    :
+                                                                    <td><h4>{teamAndScore[1]}</h4></td>
+                                                                }
+                                                            </tr>
 
                                                         </tbody>
-                                                        
-                                                            )
-                                                        })}
-                                                        </Table>
 
-                                                        </div>
-                                                    
-                                                </Tab.Content>
-
-                                            </Col>
-
-
-                                        </Row>
-                                    </Tab.Container>
-
-                                
-
-                           
+                                                    )
+                                                })}
+                                        </Table>
 
 
 
+                                    </Tab.Content>
+
+                                </Col>
+
+
+                            </Row>
+                        </Tab.Container>
 
                     </div>
 

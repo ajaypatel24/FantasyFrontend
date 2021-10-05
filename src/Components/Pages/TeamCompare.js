@@ -12,17 +12,18 @@ export default class TeamCompare extends React.Component {
 
         this.state = {
 
-            LeaderPlayer: [],
+            ListOfPlayers: [],
             player: [],
             TopPlayers: [],
             TopCategories: [],
             PlayerName: [],
-            Winning: [],
+            WinningMatchupMap: [],
             AllData: this.props.TeamCompareInformation[0],
             WinningHolder: [],
             loadingComplete: false,
             show: false,
-            name: ""
+            name: "",
+            CategoryLeaderboard: []
 
         };
 
@@ -34,57 +35,64 @@ export default class TeamCompare extends React.Component {
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
-        await axios.post('https://react-flask-fantasy.herokuapp.com/winning-matchups', bodyFormData)
+        //count of winning matchups
+        await axios.post(process.env.REACT_APP_URI_ENDPOINT +'/winning-matchups', bodyFormData)
 
             .then((response) => {
                 this.setState({ WinningHolder: JSON.stringify(response.data) })
             })
 
-        await axios.post('https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
+        //Count of wins against other teams
+        await axios.post(process.env.REACT_APP_URI_ENDPOINT +'/win-calculator', bodyFormData)
 
             .then((response) => {
-                this.setState({ Leaders: JSON.stringify(response.data) })
+                this.setState({ CategoryLeaderboard: JSON.stringify(response.data) })
             })
 
 
-        var arr = [] //usable object that can be mapped
-        var obj = JSON.parse(this.state.WinningHolder)
-        var PlayerList = Object.keys(obj)
+        var winningMatchupArray = [] //usable object that can be mapped
+        var obj = JSON.parse(this.state.WinningHolder) //{Team : Array of WinningMatchupMap Matchups}
+        var PlayerList = Object.keys(obj) //List of players
 
 
-        for (var i in PlayerList) {
-            var x = {}
-            x[PlayerList[i]] = obj[PlayerList[i]]
-            arr.push(x)
-        }
+        PlayerList.forEach(function (item, index) { //populate 
+            var teamWinningMatchupPair = {}
+            teamWinningMatchupPair[item] = obj[item]
+            winningMatchupArray.push(teamWinningMatchupPair);
+        });
+
+        await this.setState({ WinningMatchupMap: winningMatchupArray })
+        await this.setState({ ListOfPlayers: PlayerList })
 
 
-        await this.setState({ Winning: arr })
-        await this.setState({ LeaderPlayer: PlayerList })
-
-        arr = []
-        var leaderKeys = JSON.parse(this.state.Leaders)
+        var CategoryRankingArray = []
+        var categoryLeaderboardArray = JSON.parse(this.state.CategoryLeaderboard) //category rankings
         var categoryArray = []
 
+       
 
-        for (var i in leaderKeys) {
+        for (var i in categoryLeaderboardArray ) { //iterate over categories and leaderboards
             categoryArray.push(i)
-            arr.push(leaderKeys[i])
+            CategoryRankingArray.push(categoryLeaderboardArray[i])
         }
 
-        await this.setState({ AllLeader: arr })
+        await this.setState({ CategoryRanking: CategoryRankingArray })
         await this.setState({ Categories: categoryArray })
 
 
         await this.setState({ WinningHolder: [] })
-        var tempArray = []
-        this.state.Winning.map((item, i) => {
-            tempArray.push(item[this.state.LeaderPlayer[i]].length)
+
+        
+        var numberOfWinningMatchupsByTeam = []
+        this.state.WinningMatchupMap.map((item, i) => {
+           
+            numberOfWinningMatchupsByTeam.push(item[this.state.ListOfPlayers[i]].length)
         })
 
-        await this.setState({ WinningHolder: tempArray })
+        await this.setState({ WinningHolder: numberOfWinningMatchupsByTeam })
 
-        await this.assignPlayer(this.state.LeaderPlayer[0], 0)
+        await this.assignPlayer(this.state.ListOfPlayers[0], 0)
+
         await this.setState({ loadingComplete: true })
 
 
@@ -97,20 +105,20 @@ export default class TeamCompare extends React.Component {
 
         bodyFormData.append("team", JSON.stringify(team))
 
-        await axios.post('https://react-flask-fantasy.herokuapp.com/TopPerformers', bodyFormData)
+        await axios.post(process.env.REACT_APP_URI_ENDPOINT +'/TopPerformers', bodyFormData)
             .then(response => {
                 this.setState({ TopPlayers: JSON.stringify(response.data) })
             })
 
         var obj = JSON.parse(this.state.TopPlayers)
         var ranking = {}
-        for (var i = 0; i < this.state.AllLeader.length - 1; i++) {
+        for (var i = 0; i < this.state.CategoryRanking.length - 1; i++) {
             if (this.state.Categories[i].valueOf() === new String("FG%").valueOf() || this.state.Categories[i].valueOf() === new String("FT%").valueOf()) {
                 continue;
             }
 
-            for (var j = 0; j < this.state.AllLeader.length - 1; j++) {
-                if (this.state.AllLeader[i][j][0] === team) {
+            for (var j = 0; j < this.state.CategoryRanking.length - 1; j++) {
+                if (this.state.CategoryRanking[i][j][0] === team) {
                     ranking[this.state.Categories[i]] = j + 1
                 }
             }
@@ -159,10 +167,6 @@ export default class TeamCompare extends React.Component {
 
     }
 
-    async test() {
-        console.log("working")
-    }
-
     async handleClose() {
         await this.setState({ show: false })
     }
@@ -183,16 +187,16 @@ export default class TeamCompare extends React.Component {
                 <div>
 
                     {this.state.loadingComplete === true ?
-                        <Tab.Container defaultActiveKey={this.state.LeaderPlayer[0]}>
+                        <Tab.Container defaultActiveKey={this.state.ListOfPlayers[0]}>
                             <Row>
                                 <Col sm={3}>
 
                                     <ListGroup>
 
-                                        {this.state.Winning.map((item, i) => {
+                                        {this.state.WinningMatchupMap.map((item, i) => {
                                             return (
 
-                                                <ListGroup.Item eventKey={this.state.LeaderPlayer[i]} onClick={() => this.assignPlayer(this.state.LeaderPlayer[i], i)}><h4>{this.state.LeaderPlayer[i]}</h4></ListGroup.Item>
+                                                <ListGroup.Item eventKey={this.state.ListOfPlayers[i]} onClick={() => this.assignPlayer(this.state.ListOfPlayers[i], i)}><h4>{this.state.ListOfPlayers[i]}</h4></ListGroup.Item>
 
                                             )
                                         })}
@@ -259,37 +263,30 @@ export default class TeamCompare extends React.Component {
 
                                                                 <Alert variant="primary">
                                                                     <Alert.Heading>
-                                                                        {this.state.Winning[this.state.player[1]][this.state.player[0]].length} Winning Matchups
+                                                                        {this.state.WinningMatchupMap[this.state.player[1]][this.state.player[0]].length} Winning Matchups
                                                                     </Alert.Heading>
                                                                 </Alert>
 
 
-                                                                {this.state.Winning[this.state.player[1]][this.state.player[0]].map((item, i) => {
+                                                                {this.state.WinningMatchupMap[this.state.player[1]][this.state.player[0]].map((WinningMatchup, i) => {
 
                                                                     return (
                                                                         <Accordion>
 
 
-                                                                            {[Object.keys(item)].map((q, x) => {
+                                                                            {[Object.keys(WinningMatchup)].map((teamName, x) => {
 
                                                                                 return (
 
                                                                                     <Accordion.Item eventKey="q">
-                                                                                        <Accordion.Header><h5>{q} : {item[q].length}</h5></Accordion.Header>
+                                                                                        <Accordion.Header><h5>{teamName} : {WinningMatchup[teamName].length}</h5></Accordion.Header>
                                                                                         <Accordion.Body>
 
-
-
-
-
-                                                                                            {item[q].map((r, c) => {
+                                                                                            {WinningMatchup[teamName].map((categoryWon, c) => {
                                                                                                 return (
-                                                                                                    <p>{r}</p>
+                                                                                                    <p>{categoryWon}</p>
                                                                                                 )
                                                                                             })}
-
-
-
 
                                                                                         </Accordion.Body>
                                                                                     </Accordion.Item>
