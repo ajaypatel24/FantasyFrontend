@@ -23,7 +23,7 @@ export default class RootComponent extends React.Component {
             Players: [],
             Categories: [],
             AllData: [],
-            LoadingButton: false,
+            LoadingButton: true,
 
         };
 
