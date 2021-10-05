@@ -36,14 +36,14 @@ export default class TeamCompare extends React.Component {
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
         //count of winning matchups
-        await axios.post(process.env.REACT_APP_URI_ENDPOINT +'/winning-matchups', bodyFormData)
+        await axios.post(/*process.env.REACT_APP_URI_ENDPOINT +*/'https://react-flask-fantasy.herokuapp.com/winning-matchups', bodyFormData)
 
             .then((response) => {
                 this.setState({ WinningHolder: JSON.stringify(response.data) })
             })
 
         //Count of wins against other teams
-        await axios.post(process.env.REACT_APP_URI_ENDPOINT +'/win-calculator', bodyFormData)
+        await axios.post(/*process.env.REACT_APP_URI_ENDPOINT +*/'https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ CategoryLeaderboard: JSON.stringify(response.data) })
@@ -105,7 +105,7 @@ export default class TeamCompare extends React.Component {
 
         bodyFormData.append("team", JSON.stringify(team))
 
-        await axios.post(process.env.REACT_APP_URI_ENDPOINT +'/TopPerformers', bodyFormData)
+        await axios.post(/*process.env.REACT_APP_URI_ENDPOINT +*/'https://react-flask-fantasy.herokuapp.com/TopPerformers', bodyFormData)
             .then(response => {
                 this.setState({ TopPlayers: JSON.stringify(response.data) })
             })

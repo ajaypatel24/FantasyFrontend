@@ -37,7 +37,7 @@ export default class RootComponent extends React.Component {
 
     async componentDidMount() {
 
-        await axios.get(process.env.REACT_APP_URI_ENDPOINT +'/test')
+        await axios.get(/*process.env.REACT_APP_URI_ENDPOINT +*/'https://react-flask-fantasy.herokuapp.com/test')
             .then(response => {
                 this.setState({ rawDataFromResponse: JSON.stringify(response.data) })
             })
