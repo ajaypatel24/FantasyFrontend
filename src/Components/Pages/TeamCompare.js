@@ -33,17 +33,18 @@ export default class TeamCompare extends React.Component {
 
     async componentDidMount() { //get all data needed
         var bodyFormData = new FormData();
+        console.log(JSON.stringify(this.state.AllData))
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
         //count of winning matchups
-        await axios.post(/*process.env.REACT_APP_URI_ENDPOINT +*/'https://react-flask-fantasy.herokuapp.com/winning-matchups', bodyFormData)
+        await axios.post(global.config.apiEndpoint.production + '/winning-matchups', bodyFormData)
 
             .then((response) => {
                 this.setState({ WinningHolder: JSON.stringify(response.data) })
             })
 
         //Count of wins against other teams
-        await axios.post(/*process.env.REACT_APP_URI_ENDPOINT +*/'https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
+        await axios.post(global.config.apiEndpoint.production + '/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ CategoryLeaderboard: JSON.stringify(response.data) })
@@ -103,21 +104,24 @@ export default class TeamCompare extends React.Component {
     async topPerformers(team) {
         var bodyFormData = new FormData();
 
+        console.log(JSON.stringify(team))
         bodyFormData.append("team", JSON.stringify(team))
 
-        await axios.post(/*process.env.REACT_APP_URI_ENDPOINT +*/'https://react-flask-fantasy.herokuapp.com/TopPerformers', bodyFormData)
+        await axios.post(global.config.apiEndpoint.production + '/TopPerformers', bodyFormData)
             .then(response => {
                 this.setState({ TopPlayers: JSON.stringify(response.data) })
             })
 
         var obj = JSON.parse(this.state.TopPlayers)
+        console.log(this.state.CategoryRanking)
         var ranking = {}
         for (var i = 0; i < this.state.CategoryRanking.length - 1; i++) {
             if (this.state.Categories[i].valueOf() === new String("FG%").valueOf() || this.state.Categories[i].valueOf() === new String("FT%").valueOf()) {
                 continue;
             }
 
-            for (var j = 0; j < this.state.CategoryRanking.length - 1; j++) {
+            for (var j = 0; j < this.state.CategoryRanking[0].length; j++) {
+                console.log(this.state.CategoryRanking[i][j][0])
                 if (this.state.CategoryRanking[i][j][0] === team) {
                     ranking[this.state.Categories[i]] = j + 1
                 }
@@ -130,6 +134,7 @@ export default class TeamCompare extends React.Component {
         var topThreePlayers = []
         var topThreeCategories = []
 
+        console.log(ranking)
         for (var x = 0; x < 3; x++) {
             topThreePlayers.push(obj[ranking[x]])
             topThreeCategories.push(ranking[x])
@@ -138,6 +143,8 @@ export default class TeamCompare extends React.Component {
         var ImgString = []
         var PlayerNameArray = []
         var playerId = []
+
+        
         for (var t = 0; t < topThreePlayers.length; t++) { //find all player images
             for (var i = 0; i < PlayerData["league"]["standard"].length; i++) {
                 if (PlayerData["league"]["standard"][i]["firstName"] === topThreePlayers[t]["PlayerFirst"]

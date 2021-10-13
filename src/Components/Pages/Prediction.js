@@ -22,7 +22,7 @@ export default class Prediction extends React.Component {
 
     async componentDidMount() {
         //endpoint to get the prediciton without large calculation
-        await axios.get(/*process.env.REACT_APP_URI_ENDPOINT + */'https://react-flask-fantasy.herokuapp.com/prediction-fast')
+        await axios.get(global.config.apiEndpoint.production + '/prediction-fast')
             .then(response => {
                 this.setState({ PredictionResponse: JSON.stringify(response.data) })
             })
