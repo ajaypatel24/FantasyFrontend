@@ -37,7 +37,7 @@ export default class RootComponent extends React.Component {
 
     async componentDidMount() {
 
-        await axios.get(/*process.env.REACT_APP_URI_ENDPOINT +*/'https://react-flask-fantasy.herokuapp.com/test')
+        await axios.get(global.config.apiEndpoint.production + '/test')
             .then(response => {
                 this.setState({ rawDataFromResponse: JSON.stringify(response.data) })
             })
@@ -156,7 +156,7 @@ export default class RootComponent extends React.Component {
                                             <Route exact path="/Compare" render={(props) => (
                                                 <TeamCompare {...props} TeamCompareInformation={teamCompareInformation} />)}
                                             />
-                                            <Route exact path="/Prediction" component={Prediction} />
+                                            <Route exact path="/Prediction" component={Maintenance} />
 
                                             <Route path="/" render={(props) => (
                                                 <CurrentStats {...props} CurrentStatInformation={currentStatInformation} />)}

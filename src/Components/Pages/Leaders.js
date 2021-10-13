@@ -31,14 +31,14 @@ export default class Leaders extends React.Component {
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
         //API call to get leaders of categories
-        await axios.post(/*process.env.REACT_APP_URI_ENDPOINT + */'https://react-flask-fantasy.herokuapp.com/win-calculator', bodyFormData)
+        await axios.post(global.config.apiEndpoint.production + '/win-calculator', bodyFormData)
 
             .then((response) => {
                 this.setState({ Leaders: JSON.stringify(response.data) })
             })
 
         if (this.state.TeamPhotos === null) {
-            await axios.get(/*process.env.REACT_APP_URI_ENDPOINT + */'https://react-flask-fantasy.herokuapp.com/team-photo')
+            await axios.get(global.config.apiEndpoint.production + '/team-photo')
 
                 .then((response) => {
                     this.setState({ TeamPhotos: JSON.stringify(response.data) })
