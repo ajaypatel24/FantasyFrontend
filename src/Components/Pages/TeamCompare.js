@@ -33,7 +33,6 @@ export default class TeamCompare extends React.Component {
 
     async componentDidMount() { //get all data needed
         var bodyFormData = new FormData();
-        console.log(JSON.stringify(this.state.AllData))
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
         //count of winning matchups
@@ -104,7 +103,6 @@ export default class TeamCompare extends React.Component {
     async topPerformers(team) {
         var bodyFormData = new FormData();
 
-        console.log(JSON.stringify(team))
         bodyFormData.append("team", JSON.stringify(team))
 
         await axios.post(global.config.apiEndpoint.production + '/TopPerformers', bodyFormData)
@@ -113,7 +111,7 @@ export default class TeamCompare extends React.Component {
             })
 
         var obj = JSON.parse(this.state.TopPlayers)
-        console.log(this.state.CategoryRanking)
+
         var ranking = {}
         for (var i = 0; i < this.state.CategoryRanking.length - 1; i++) {
             if (this.state.Categories[i].valueOf() === new String("FG%").valueOf() || this.state.Categories[i].valueOf() === new String("FT%").valueOf()) {
@@ -121,7 +119,7 @@ export default class TeamCompare extends React.Component {
             }
 
             for (var j = 0; j < this.state.CategoryRanking[0].length; j++) {
-                console.log(this.state.CategoryRanking[i][j][0])
+
                 if (this.state.CategoryRanking[i][j][0] === team) {
                     ranking[this.state.Categories[i]] = j + 1
                 }
@@ -134,7 +132,7 @@ export default class TeamCompare extends React.Component {
         var topThreePlayers = []
         var topThreeCategories = []
 
-        console.log(ranking)
+
         for (var x = 0; x < 3; x++) {
             topThreePlayers.push(obj[ranking[x]])
             topThreeCategories.push(ranking[x])
