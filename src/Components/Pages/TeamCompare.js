@@ -104,13 +104,9 @@ export default class TeamCompare extends React.Component {
         var bodyFormData = new FormData();
 
         bodyFormData.append("team", JSON.stringify(team))
+        
 
-        await axios.post(global.config.apiEndpoint.production + '/TopPerformers', bodyFormData)
-            .then(response => {
-                this.setState({ TopPlayers: JSON.stringify(response.data) })
-            })
-
-        var obj = JSON.parse(this.state.TopPlayers)
+        
 
         var ranking = {}
         for (var i = 0; i < this.state.CategoryRanking.length - 1; i++) {
@@ -128,6 +124,14 @@ export default class TeamCompare extends React.Component {
         }
 
         ranking = Object.entries(ranking).sort((a, b) => a[1] - b[1]).map(el => el[0])
+        bodyFormData.append("categoryRanking", JSON.stringify(ranking.slice(0,3)))
+
+        await axios.post(global.config.apiEndpoint.production + '/TopPerformers', bodyFormData)
+            .then(response => {
+                this.setState({ TopPlayers: JSON.stringify(response.data) })
+            })
+
+        var obj = JSON.parse(this.state.TopPlayers)
 
         var topThreePlayers = []
         var topThreeCategories = []
@@ -137,6 +141,7 @@ export default class TeamCompare extends React.Component {
             topThreePlayers.push(obj[ranking[x]])
             topThreeCategories.push(ranking[x])
         }
+
 
         var ImgString = []
         var PlayerNameArray = []
@@ -162,6 +167,7 @@ export default class TeamCompare extends React.Component {
         await this.setState({ TopPlayers: ImgString })
         await this.setState({ PlayerName: PlayerNameArray })
         await this.setState({ TopCategories: topThreeCategories })
+
 
     }
 
