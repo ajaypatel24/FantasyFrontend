@@ -110,9 +110,9 @@ export default class TeamCompare extends React.Component {
 
         var ranking = {}
         for (var i = 0; i < this.state.CategoryRanking.length - 1; i++) {
-            if (this.state.Categories[i].valueOf() === new String("FG%").valueOf() || this.state.Categories[i].valueOf() === new String("FT%").valueOf()) {
-                continue;
-            }
+            //if (this.state.Categories[i].valueOf() === new String("FG%").valueOf() || this.state.Categories[i].valueOf() === new String("FT%").valueOf()) {
+            //    continue;
+            //}
 
             for (var j = 0; j < this.state.CategoryRanking[0].length; j++) {
 
