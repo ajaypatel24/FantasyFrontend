@@ -1,1 +1,0 @@
-{/* onClick={() => this.assignPlayer(this.state.LeaderPlayer[i], i)}} */}

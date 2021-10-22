@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Image, Col, Row, Badge, ListGroup, Tab, Accordion, Figure, Alert, Button, Modal } from 'react-bootstrap'
+import { Image, Col, Row, Badge, ListGroup, Tab, Accordion, Figure, Alert, Button, Modal, Container, Spinner } from 'react-bootstrap'
 import axios from 'axios'
 import "../../styles/PageStyle.css"
 import PlayerData from "../../PlayerData/PlayerData.json"
@@ -23,7 +23,8 @@ export default class TeamCompare extends React.Component {
             loadingComplete: false,
             show: false,
             name: "",
-            CategoryLeaderboard: []
+            CategoryLeaderboard: [],
+            timeToUpdate: 0
 
         };
 
@@ -167,7 +168,11 @@ export default class TeamCompare extends React.Component {
         await this.setState({ TopPlayers: ImgString })
         await this.setState({ PlayerName: PlayerNameArray })
         await this.setState({ TopCategories: topThreeCategories })
-
+        
+        await axios.get(global.config.apiEndpoint.production + '/time-to-update')
+            .then(response => {
+                this.setState({ timeToUpdate: response.data})
+            })
 
     }
 
@@ -197,7 +202,7 @@ export default class TeamCompare extends React.Component {
 
                 <div>
 
-                    {this.state.loadingComplete === true ?
+                    {this.state.loadingComplete !== false ?
                         <Tab.Container defaultActiveKey={this.state.ListOfPlayers[0]}>
                             <Row>
                                 <Col sm={3}>
@@ -231,6 +236,8 @@ export default class TeamCompare extends React.Component {
                                                         </Row>
                                                         <Row>
                                                             <h4>Top Performers</h4>
+                                                            <caption>Time to Next Update {this.state.timeToUpdate} mins</caption>
+                                                            
 
                                                         </Row>
                                                         <br />
@@ -332,7 +339,17 @@ export default class TeamCompare extends React.Component {
 
                         :
 
-                        null
+                        <Row>
+                            <div>
+                            <Spinner animation="grow" />
+                            </div>
+                        <Row>
+                        <h4>Updating Roster Stats</h4>
+                        </Row>
+                        <Row>
+                        <p>This may a few minutes</p>
+                        </Row>
+                        </Row>
                     }
                 </div>
 

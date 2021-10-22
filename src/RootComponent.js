@@ -156,7 +156,7 @@ export default class RootComponent extends React.Component {
                                             <Route exact path="/Compare" render={(props) => (
                                                 <TeamCompare {...props} TeamCompareInformation={teamCompareInformation} />)}
                                             />
-                                            <Route exact path="/Prediction" component={Maintenance} />
+                                            <Route exact path="/Prediction" component={Prediction} />
 
                                             <Route path="/" render={(props) => (
                                                 <CurrentStats {...props} CurrentStatInformation={currentStatInformation} />)}

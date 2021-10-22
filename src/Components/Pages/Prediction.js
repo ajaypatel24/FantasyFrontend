@@ -42,6 +42,7 @@ export default class Prediction extends React.Component {
             <Col>
 
                 <h1 style={{ textAlign: 'center' }}>Matchup Predictions</h1>
+                <h6 style={{ textAlign: 'center' }}>Not enough data yet for this to be close to accurate</h6>
                 
 
                 {this.state.Prediction.length !== 0 ?
