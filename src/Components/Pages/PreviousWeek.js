@@ -30,10 +30,6 @@ export default class PreviousWeek extends React.Component {
         this.getWeekDataByNumber = this.getWeekDataByNumber.bind(this);
         this.handleSelect = this.handleSelect.bind(this)
     }
-
-    componentDidMount() {
-        console.log(this.state.weekArray)
-    }
     
     async getWeekDataByNumber(week) { //get all data needed
         var bodyFormData = new FormData();
