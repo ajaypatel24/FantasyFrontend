@@ -9,7 +9,10 @@ import Leaders from "./Components/Pages/Leaders"
 import Prediction from "./Components/Pages/Prediction"
 import TeamCompare from "./Components/Pages/TeamCompare"
 import CurrentStats from "./Components/Pages/CurrentStats"
+import PreviousWeek from "./Components/Pages/PreviousWeek"
+
 import Maintenance from "./Components/Maintenance/Maintenance"
+
 
 
 export default class RootComponent extends React.Component {
@@ -24,11 +27,12 @@ export default class RootComponent extends React.Component {
             Categories: [],
             AllData: [],
             LoadingButton: true,
+            weekArray: []
 
         };
 
         this.refresh = this.refresh.bind(this)
-        this.getPrediction = this.getPrediction.bind(this)
+        
 
     }
 
@@ -69,27 +73,20 @@ export default class RootComponent extends React.Component {
             LoadingButton: false
         })
 
-    }
 
+        var allWeekArray = []
+        var totalWeek = -1;
+        await axios.get(global.config.apiEndpoint.production + "/week")
+            .then((response) => {
+                totalWeek = response.data
+            })
+        
+        for (var i = 1; i <= totalWeek-1; i++) {
+            allWeekArray.push(i)
+        }
 
+        await this.setState({weekArray : allWeekArray})
 
-
-    async getPrediction(e) {
-        /*
-        await axios.get('/predict')
-        .then(response => {
-            this.setState({ Prediction: JSON.stringify(response.data) })
-        })
-
-        console.log(this.state.Prediction)
-        var arr = []
-        var obj = JSON.parse(this.state.Prediction)
-        console.log(obj)
-        await this.setState({ Prediction: obj })
-        await this.setState({ Tester: this.state.Prediction[0]})
-        console.log(this.state.Prediction)
-        */
-        this.showContent(e)
     }
 
 
@@ -114,6 +111,10 @@ export default class RootComponent extends React.Component {
             this.state.AllData
         ]
 
+        let previousWeekInformation = [
+            this.state.weekArray
+        ]
+
         return (
 
 
@@ -127,9 +128,10 @@ export default class RootComponent extends React.Component {
                             <Nav className="mr-auto">
 
                                 <Button href="#/" variant="dark" id="0" >Home</Button>
-                                <Button href="#/Leaders" variant="dark" id="1" >Leaders</Button>
-                                <Button href="#/Compare" variant="dark" id="2" >Team vs Other Teams</Button>
-                                <Button href="#/Prediction" variant="dark" id="3" >Predictions</Button>
+                                <Button href="#/PreviousWeek" variant="dark" id="1">Previous Weeks</Button>
+                                <Button href="#/Leaders" variant="dark" id="2" >Leaders</Button>
+                                <Button href="#/Compare" variant="dark" id="3" >Team vs Other Teams</Button>
+                                <Button href="#/Prediction" variant="dark" id="4" >Predictions</Button>
                             </Nav>
 
                         </Navbar.Collapse>
@@ -148,6 +150,10 @@ export default class RootComponent extends React.Component {
 
                                     <HashRouter>
                                         <Switch>
+                                            <Route exact path="/PreviousWeek" render={(props) => (
+                                                <PreviousWeek {...props} WeekInformation={previousWeekInformation} />)}
+                                            />
+                                                
                                             
                                             <Route exact path="/Leaders" render={(props) => (
                                                 <Leaders {...props} LeaderInformation={leaderInformation} />)}
@@ -161,6 +167,8 @@ export default class RootComponent extends React.Component {
                                             <Route path="/" render={(props) => (
                                                 <CurrentStats {...props} CurrentStatInformation={currentStatInformation} />)}
                                             />
+
+                                                
                                         </Switch>
 
                                     </HashRouter>
