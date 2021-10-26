@@ -19,7 +19,8 @@ export default class Leaders extends React.Component {
             Leaders: [],
             TeamPhotos: teamPhoto, //cached after pulled once
             Loading: true,
-            selectedIndex: 0
+            selectedIndex: 0,
+            WincalculationOld: this.props.LeaderInformation[0]
 
         };
 
@@ -29,13 +30,19 @@ export default class Leaders extends React.Component {
 
         var bodyFormData = new FormData();
         bodyFormData.append("data", JSON.stringify(this.state.AllData))
-
+        
         //API call to get leaders of categories
-        await axios.post(global.config.apiEndpoint.production + '/win-calculator', bodyFormData)
+        if (!this.state.WincalculationOld.hasOwnProperty('3PTM')) {
+            await axios.post(global.config.apiEndpoint.production + '/win-calculator', bodyFormData)
 
-            .then((response) => {
-                this.setState({ Leaders: JSON.stringify(response.data) })
-            })
+                .then((response) => {
+                    this.setState({ Leaders: JSON.stringify(response.data) })
+                })
+
+            }
+        else {
+            await this.setState({ Leaders : JSON.stringify(this.state.WincalculationOld) })
+        }
 
         if (this.state.TeamPhotos === null) {
             await axios.get(global.config.apiEndpoint.production + '/team-photo')
