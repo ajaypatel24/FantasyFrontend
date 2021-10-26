@@ -299,12 +299,15 @@ export default class TeamCompare extends React.Component {
                                                                                     <Accordion.Item eventKey="q">
                                                                                         <Accordion.Header><h5>{teamName} : {WinningMatchup[teamName].length}</h5></Accordion.Header>
                                                                                         <Accordion.Body>
-
+                                                                                        
                                                                                             {WinningMatchup[teamName].map((categoryWon, c) => {
                                                                                                 return (
-                                                                                                    <p>{categoryWon}</p>
+                                                                                                    
+                                                                                                    <Badge bg="info">{categoryWon}</Badge>
+                                                                                                    
                                                                                                 )
                                                                                             })}
+                                                                                        
 
                                                                                         </Accordion.Body>
                                                                                     </Accordion.Item>
