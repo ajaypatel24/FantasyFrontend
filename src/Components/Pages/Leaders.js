@@ -4,6 +4,7 @@ import { Alert, Card, CardGroup, Table, Image, Accordion, Tabs, Tab, Figure, Col
 import axios from 'axios'
 import teamPhoto from '../../PlayerData/TeamPhoto.json'
 import "../../styles/PageStyle.css"
+import AverageStats from './AverageStats'
 
 
 export default class Leaders extends React.Component {
@@ -84,7 +85,10 @@ export default class Leaders extends React.Component {
 
 
     render() {
+        let leaderInformation = [
 
+            this.state.AllData
+        ]
 
         return (
 
@@ -168,6 +172,9 @@ export default class Leaders extends React.Component {
                                 </Col>
 
 
+                            </Row>
+                            <Row>
+                                <AverageStats TeamCompareInformation={leaderInformation}></AverageStats>
                             </Row>
                         </Tab.Container>
 
