@@ -12,6 +12,7 @@ import CurrentStats from "./Components/Pages/CurrentStats"
 import PreviousWeek from "./Components/Pages/PreviousWeek"
 
 import Maintenance from "./Components/Maintenance/Maintenance"
+import AverageStats from './Components/Pages/AverageStats'
 
 
 
@@ -132,6 +133,7 @@ export default class RootComponent extends React.Component {
                                 <Button href="#/Leaders" variant="dark" id="2" >Leaders</Button>
                                 <Button href="#/Compare" variant="dark" id="3" >Team vs Other Teams</Button>
                                 <Button href="#/Prediction" variant="dark" id="4" >Predictions</Button>
+                                
                             </Nav>
 
                         </Navbar.Collapse>
@@ -163,6 +165,8 @@ export default class RootComponent extends React.Component {
                                                 <TeamCompare {...props} TeamCompareInformation={teamCompareInformation} />)}
                                             />
                                             <Route exact path="/Prediction" component={Prediction} />
+
+                                            
 
                                             <Route path="/" render={(props) => (
                                                 <CurrentStats {...props} CurrentStatInformation={currentStatInformation} />)}
