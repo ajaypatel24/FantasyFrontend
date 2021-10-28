@@ -235,8 +235,8 @@ export default class TeamCompare extends React.Component {
 
                                                         </Row>
                                                         <Row>
-                                                            <h4>Top Performers</h4>
-                                                            <caption>Time to Next Update {this.state.timeToUpdate} mins</caption>
+                                                            <h4>Top Performers this Season</h4>
+                                                            <caption>Time to Next Update {this.state.timeToUpdate} hours</caption>
                                                             
 
                                                         </Row>
