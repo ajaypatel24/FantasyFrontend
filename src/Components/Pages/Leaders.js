@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Alert, Card, CardGroup, Table, Image, Accordion, Tabs, Tab, Figure, Col, Row, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Table, Tabs, Tab, Figure, Col, Row, ListGroup } from 'react-bootstrap'
 import axios from 'axios'
 import teamPhoto from '../../PlayerData/TeamPhoto.json'
 import "../../styles/PageStyle.css"
@@ -21,10 +21,12 @@ export default class Leaders extends React.Component {
             TeamPhotos: teamPhoto, //cached after pulled once
             Loading: true,
             selectedIndex: 0,
-            WincalculationOld: this.props.LeaderInformation[0]
+            WincalculationOld: this.props.LeaderInformation[0],
+            activeKey: 'Graph'
 
         };
 
+        this.setKey = this.setKey.bind(this)
     }
 
     async componentDidMount() {
@@ -83,11 +85,16 @@ export default class Leaders extends React.Component {
         await this.setState({ selectedIndex: i });
     }
 
+    async setKey(e) {
+        await this.setState({activeKey : e})
+    }
+
 
     render() {
         let leaderInformation = [
 
-            this.state.AllData
+            this.state.AllData,
+            this.state.Categories[this.state.selectedIndex]
         ]
 
         return (
@@ -117,65 +124,77 @@ export default class Leaders extends React.Component {
                                 <Col sm={9} >
                                     <Tab.Content>
 
+                                        <Tabs
+                                            id="controlled-tab-example"
+                                            activeKey={this.state.activeKey}
+                                            onSelect={this.setKey}
+                                            className="mb-3"
+                                        >
 
-                                        <Table striped bordered hover>
-                                            <thead>
+                                            <Tab eventKey="Graph" title="Graph">
+                                                <AverageStats TeamCompareInformation={leaderInformation}></AverageStats>
+                                            </Tab>
 
-                                                <tr >
-                                                    <th colSpan="2">
-                                                        <h2> {this.state.Categories[this.state.selectedIndex]} Leader </h2>
-                                                        <Figure>
+                                            <Tab eventKey="Ranking" title="Ranking">
+                                                <Table striped bordered hover>
+                                                    <thead>
 
-                                                            <Figure.Image height='100px'
-                                                                width='100px' style={{ alignSelf: 'center' }}
-                                                                src={this.state.TeamPhotos[this.state.AllLeader[this.state.selectedIndex][0][0]]}
-                                                                thumbnail />
+                                                        <tr >
+                                                            <th colSpan="2">
+                                                                <h2> {this.state.Categories[this.state.selectedIndex]} Leader </h2>
+                                                                <Figure>
 
-
-                                                        </Figure>
-                                                    </th>
-                                                </tr>
-
-                                            </thead>
-                                            {
-                                                this.state.AllLeader[this.state.selectedIndex].map((teamAndScore, i) => {
-
-                                                    return (
-
-                                                        <tbody>
-
-                                                            <tr>
-
-                                                                {i === 0 ?
-                                                                    <td><i><h2><strong>{teamAndScore[0]}</strong></h2> </i></td>
-                                                                    :
-                                                                    <td><h4>{teamAndScore[0]}</h4></td>
-                                                                }
-                                                                {i === 0 ?
-
-                                                                    <td><i><h2><strong>{teamAndScore[1]}</strong></h2></i></td>
-                                                                    :
-                                                                    <td><h4>{teamAndScore[1]}</h4></td>
-                                                                }
-                                                            </tr>
-
-                                                        </tbody>
-
-                                                    )
-                                                })}
-                                        </Table>
+                                                                    <Figure.Image height='100px'
+                                                                        width='100px' style={{ alignSelf: 'center' }}
+                                                                        src={this.state.TeamPhotos[this.state.AllLeader[this.state.selectedIndex][0][0]]}
+                                                                        thumbnail />
 
 
+                                                                </Figure>
+                                                            </th>
+                                                        </tr>
 
+                                                    </thead>
+                                                    {
+                                                        this.state.AllLeader[this.state.selectedIndex].map((teamAndScore, i) => {
+
+                                                            return (
+
+                                                                <tbody>
+
+                                                                    <tr>
+
+                                                                        {i === 0 ?
+                                                                            <td><i><h2><strong>{teamAndScore[0]}</strong></h2> </i></td>
+                                                                            :
+                                                                            <td><h4>{teamAndScore[0]}</h4></td>
+                                                                        }
+                                                                        {i === 0 ?
+
+                                                                            <td><i><h2><strong>{teamAndScore[1]}</strong></h2></i></td>
+                                                                            :
+                                                                            <td><h4>{teamAndScore[1]}</h4></td>
+                                                                        }
+                                                                    </tr>
+
+                                                                </tbody>
+
+                                                            )
+                                                        })}
+                                                </Table>
+                                            </Tab>
+
+                                            
+        
+                                        </Tabs>
+                                        
                                     </Tab.Content>
 
                                 </Col>
 
 
                             </Row>
-                            <Row>
-                                <AverageStats TeamCompareInformation={leaderInformation}></AverageStats>
-                            </Row>
+                            
                         </Tab.Container>
 
                     </div>

@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Col, Row, Badge, ListGroup, Tab, Accordion, Alert, Button, Dropdown, DropdownButton } from 'react-bootstrap'
+import { Col, Row, Badge, ListGroup, Tab, Accordion, Alert, Dropdown, DropdownButton } from 'react-bootstrap'
 import axios from 'axios'
 import "../../styles/PageStyle.css"
 import Leaders from './Leaders'
