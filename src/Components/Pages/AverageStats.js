@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { BarChart, Bar, LabelList, Cell, Label, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { Table, Row, Col, ListGroup, Dropdown, DropdownButton } from 'react-bootstrap'
 import axios from 'axios'
 import "../../styles/PageStyle.css"
 const data = [
@@ -67,7 +66,7 @@ export default class AverageStats extends PureComponent {
         category: [],
         hold: [],
         AverageData: [],
-        selectedCategory: ""
+        selectedCategory: this.props.TeamCompareInformation[1]
 
 
     };
@@ -77,7 +76,13 @@ export default class AverageStats extends PureComponent {
 
 }
 
+async componentWillReceiveProps(newProps) {
+    await this.setState({selectedCategory : newProps["TeamCompareInformation"][1]})
+    this.getChartDataForCategory()
+
+}
 async componentDidMount() { //get all data needed
+    
     var bodyFormData = new FormData();
     bodyFormData.append("data", JSON.stringify(this.state.AllData))
 
@@ -110,14 +115,10 @@ async componentDidMount() { //get all data needed
 
     this.getChartDataForCategory("3PTM")
     
-    
-
-    
-
-
 }
 
-async getChartDataForCategory(categorySelected) {
+async getChartDataForCategory() {
+  var categorySelected = this.state.selectedCategory
   await this.setState({selectedCategory : categorySelected})
   var dataArray = []
     for (var key in this.state.AllData) {
@@ -155,25 +156,16 @@ async handleSelect(e) {
     return (
       <div>
         
-        <div style={{ width: '100%', height: 600 }}>
+        <div style={{ width: '100%', height: 700 }}>
         {this.state.graphData.length === 0 && this.state.category.length === 0 ? 
 
 
             null
             :
-            <div style={{ width: '100%', height: 600 }}>
-            <DropdownButton
-                            title="Select Category"
-                            onSelect={this.handleSelect}>
-                                
-
-                                
-                                    {this.state.category.map((key, option) => (
-                                        <Dropdown.Item eventKey={key}>{key}</Dropdown.Item>
-                                    ))}
-                                
-                            </DropdownButton>
-                            <h1>Average for {this.state.selectedCategory} : {this.state.Average}</h1>
+            <div style={{ width: '100%', height: 700 }}>
+              
+            
+              <h1>Average for {this.state.selectedCategory} : {this.state.Average}</h1>
             <ResponsiveContainer>
         <BarChart
         width={700}

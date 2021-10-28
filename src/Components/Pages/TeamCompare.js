@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Image, Col, Row, Badge, ListGroup, Tab, Accordion, Figure, Alert, Button, Modal, Container, Spinner } from 'react-bootstrap'
+import { Col, Row, Badge, ListGroup, Tab, Accordion, Figure, Alert, Button, Modal, Spinner } from 'react-bootstrap'
 import axios from 'axios'
 import "../../styles/PageStyle.css"
 import PlayerData from "../../PlayerData/PlayerData.json"

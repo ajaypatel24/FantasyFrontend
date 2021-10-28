@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Container, Button, Nav, Navbar, Col, Row, Image, Badge } from 'react-bootstrap'
+import { Container, Col, Row } from 'react-bootstrap'
 import "../../styles/PageStyle.css"
 import caruso from "../../caruso.jpeg"
 
