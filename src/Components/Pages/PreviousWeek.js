@@ -21,7 +21,8 @@ export default class PreviousWeek extends React.Component {
             name: "",
             WeekNumber: -1,
             LeaderProp: [],
-            weekArray: this.props.WeekInformation[0]
+            weekArray: this.props.WeekInformation[0],
+            leaderInformation: []
 
         };
 
@@ -29,6 +30,7 @@ export default class PreviousWeek extends React.Component {
         this.handleOpen = this.handleOpen.bind(this);
         this.getWeekDataByNumber = this.getWeekDataByNumber.bind(this);
         this.handleSelect = this.handleSelect.bind(this)
+        this.handler = this.handler.bind(this)
     }
     
     async getWeekDataByNumber(week) { //get all data needed
@@ -63,6 +65,17 @@ export default class PreviousWeek extends React.Component {
 
         await this.setState({ loadingComplete: true })
 
+        await this.setState({leaderInformation: [this.state.LeaderProp, this.state.AllData, null, "Previous"]})
+
+        this.handler()
+
+        
+    
+
+    }
+
+    handler() {
+      this.setState({handler: true})
     }
 
     async assignPlayer(player1, i) {
@@ -85,10 +98,7 @@ export default class PreviousWeek extends React.Component {
     }
 
     render() {
-        let leaderInformation = [
-            this.state.LeaderProp,
-            this.state.AllData
-        ]
+        
 
         return (
 
@@ -119,7 +129,11 @@ export default class PreviousWeek extends React.Component {
                                 </Col>
                             </Row>
                             <Row>
-                               <Leaders LeaderInformation={leaderInformation} /> 
+                                {this.state.leaderInformation.length === 0 ?
+                                    null
+                                :
+                               <Leaders LeaderInformation={this.state.leaderInformation} /> 
+                                }
                             </Row>
 
                             <Row>

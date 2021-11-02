@@ -7,13 +7,11 @@ import RootComponent from './RootComponent';
 
 
 class App extends React.Component {
-  state = {
-    isLoading: true
-  }
+  
 
 
   render() {
-    const {Categories, isLoading} = this.state;
+    
 
     return (
       <div id="Container">

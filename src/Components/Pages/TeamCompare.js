@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Col, Row, Badge, ListGroup, Tab, Accordion, Figure, Alert, Button, Modal, Spinner } from 'react-bootstrap'
+import { Col, Row, Badge, ListGroup, Tab, Accordion, Alert, Spinner } from 'react-bootstrap'
 import axios from 'axios'
 import "../../styles/PageStyle.css"
 import PlayerData from "../../PlayerData/PlayerData.json"
@@ -44,7 +44,7 @@ export default class TeamCompare extends React.Component {
             })
 
         //Count of wins against other teams
-        await axios.post(global.config.apiEndpoint.production + '/win-calculator', bodyFormData)
+        await axios.post(global.config.apiEndpoint.production + '/category-leader', bodyFormData)
 
             .then((response) => {
                 this.setState({ CategoryLeaderboard: JSON.stringify(response.data) })
@@ -105,9 +105,8 @@ export default class TeamCompare extends React.Component {
         var bodyFormData = new FormData();
 
         bodyFormData.append("team", JSON.stringify(team))
-        
 
-        
+
 
         var ranking = {}
         for (var i = 0; i < this.state.CategoryRanking.length - 1; i++) {
@@ -124,14 +123,21 @@ export default class TeamCompare extends React.Component {
 
         }
 
+        
+        
+
         ranking = Object.entries(ranking).sort((a, b) => a[1] - b[1]).map(el => el[0])
         bodyFormData.append("categoryRanking", JSON.stringify(ranking.slice(0,3)))
 
+        
+
+        
         await axios.post(global.config.apiEndpoint.production + '/TopPerformers', bodyFormData)
             .then(response => {
                 this.setState({ TopPlayers: JSON.stringify(response.data) })
             })
 
+        
         var obj = JSON.parse(this.state.TopPlayers)
 
         var topThreePlayers = []
@@ -147,13 +153,12 @@ export default class TeamCompare extends React.Component {
         var ImgString = []
         var PlayerNameArray = []
         var playerId = []
-
         
         for (var t = 0; t < topThreePlayers.length; t++) { //find all player images
-            for (var i = 0; i < PlayerData["league"]["standard"].length; i++) {
-                if (PlayerData["league"]["standard"][i]["firstName"] === topThreePlayers[t]["PlayerFirst"]
-                    && PlayerData["league"]["standard"][i]["lastName"] === topThreePlayers[t]["PlayerLast"]) {
-                    playerId.push(PlayerData["league"]["standard"][i]["personId"])
+            for (var z = 0; z < PlayerData["league"]["standard"].length; z++) {
+                if (PlayerData["league"]["standard"][z]["firstName"] === topThreePlayers[t]["PlayerFirst"]
+                    && PlayerData["league"]["standard"][z]["lastName"] === topThreePlayers[t]["PlayerLast"]) {
+                    playerId.push(PlayerData["league"]["standard"][z]["personId"])
                     break
                 }
             }
@@ -165,6 +170,9 @@ export default class TeamCompare extends React.Component {
             PlayerNameArray.push(topThreePlayers[y]["PlayerFirst"] + " " + topThreePlayers[y]["PlayerLast"])
         }
 
+        
+        
+
         await this.setState({ TopPlayers: ImgString })
         await this.setState({ PlayerName: PlayerNameArray })
         await this.setState({ TopCategories: topThreeCategories })
@@ -173,13 +181,17 @@ export default class TeamCompare extends React.Component {
             .then(response => {
                 this.setState({ timeToUpdate: response.data})
             })
+    
+        
+
+        
 
     }
 
     async assignPlayer(player1, i) {
 
         await this.setState({ player: [player1, i] })
-        await this.topPerformers(this.state.player[0])
+        //await this.topPerformers(this.state.player[0])
 
     }
 
@@ -225,7 +237,8 @@ export default class TeamCompare extends React.Component {
 
                                         <div>
 
-                                            {this.state.TopPlayers.length !== 0 ?
+{/* this.state.TopPlayers.length !== 0 ? */}
+                                            { this.state.WinningMatchupMap.length !== 0 ? 
 
                                                 <Row>
 
@@ -234,6 +247,7 @@ export default class TeamCompare extends React.Component {
                                                         <Row>
 
                                                         </Row>
+                                                        {/* 
                                                         <Row>
                                                             <h4>Top Performers</h4>
                                                             <caption>Time to Next Update {this.state.timeToUpdate} mins</caption>
@@ -274,6 +288,7 @@ export default class TeamCompare extends React.Component {
                                                             })}
 
                                                         </Row>
+                                                        */}
 
                                                         <Row>
                                                             <Col >
