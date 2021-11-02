@@ -26,7 +26,7 @@ export default class Maintenance extends React.Component {
                         <Row>
 
                             <Col >
-                                <img src={caruso}/>
+                                <img src={caruso} alt=""/>
                             </Col>
 
                         </Row>

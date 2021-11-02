@@ -2,9 +2,9 @@
 import React from 'react'
 import { Table, Tabs, Tab, Figure, Col, Row, ListGroup } from 'react-bootstrap'
 import axios from 'axios'
-import teamPhoto from '../../PlayerData/TeamPhoto.json'
 import "../../styles/PageStyle.css"
 import AverageStats from './AverageStats'
+
 
 
 export default class Leaders extends React.Component {
@@ -13,12 +13,12 @@ export default class Leaders extends React.Component {
 
         this.state = {
 
-            data: this.props.dataParentToChild,
-            AllLeader: [],
+            StatLeaderInformation: [],
             Categories: [],
             AllData: this.props.LeaderInformation[1],
+            Source: this.props.LeaderInformation[3],
             Leaders: [],
-            TeamPhotos: teamPhoto, //cached after pulled once
+            TeamPhotos: this.props.LeaderInformation[2], //cached after pulled once
             Loading: true,
             selectedIndex: 0,
             WincalculationOld: this.props.LeaderInformation[0],
@@ -26,9 +26,70 @@ export default class Leaders extends React.Component {
 
         };
 
-        this.setKey = this.setKey.bind(this)
+        this.setTabKey = this.setTabKey.bind(this)
+        this.updateComponentData = this.updateComponentData.bind(this)
+        
     }
 
+    async updateComponentData() {
+        if (this.state.Source === 'Previous') {
+            await this.setState({ Leaders : JSON.stringify(this.state.WincalculationOld) })
+        }
+        
+
+        
+        
+        var teamRankingByCategory = []
+        
+        var leadersJsonObject = JSON.parse(this.state.Leaders)
+        var category = Object.keys(leadersJsonObject)
+
+
+        
+        
+        
+        
+        for (var i = 0; i < category.length; i++) { //sorting algorithm, python cant sort dict properly
+            
+            var sortable = []
+            for (var team in leadersJsonObject[category[i]]) {
+                sortable.push([team, leadersJsonObject[category[i]][team]]);
+            }
+            sortable.sort(function(a, b) {
+                if (category[i] === 'TO') {
+                    return a[1]-b[1]
+                }
+                return b[1] - a[1]
+            })
+            var objSorted = {}
+            sortable.forEach(function(item) {
+                objSorted[item[0]]=item[1]
+            })
+            
+            teamRankingByCategory.push(objSorted)
+        }
+        
+        
+
+        await this.setState({ StatLeaderInformation: teamRankingByCategory })
+        await this.setState({ Categories: category })
+        await this.setState({ Loading: false })
+        
+        
+
+    }
+
+    
+
+    async componentWillReceiveProps(prevProps) {
+
+        await this.setState({WincalculationOld : this.props.LeaderInformation[0],
+                            AllData: this.props.LeaderInformation[1]})
+        await this.updateComponentData()
+        
+        
+        
+    }
     async componentDidMount() {
 
         var bodyFormData = new FormData();
@@ -36,63 +97,69 @@ export default class Leaders extends React.Component {
         
         //API call to get leaders of categories
         if (!this.state.WincalculationOld.hasOwnProperty('3PTM')) {
-            await axios.post(global.config.apiEndpoint.production + '/win-calculator', bodyFormData)
+            await axios.post(global.config.apiEndpoint.production + '/category-leader', bodyFormData)
 
                 .then((response) => {
                     this.setState({ Leaders: JSON.stringify(response.data) })
                 })
 
-            }
+        }
         else {
             await this.setState({ Leaders : JSON.stringify(this.state.WincalculationOld) })
         }
 
-        if (this.state.TeamPhotos === null) {
-            await axios.get(global.config.apiEndpoint.production + '/team-photo')
+        this.updateComponentData()
 
-                .then((response) => {
-                    this.setState({ TeamPhotos: JSON.stringify(response.data) })
-                })
-
-            var teamPhotosJsonObject = JSON.parse(this.state.TeamPhotos)
-            var teamPhotoObject = {}
-            for (var team in teamPhotosJsonObject) { //build teamPhotoObject to use as state {TeamName : PhotoURL}
-
-                teamPhotoObject[team] = teamPhotosJsonObject[team]
-            }
-
-            await this.setState({ TeamPhotos: teamPhotoObject })
-
-        }
+        /*
         var teamRankingByCategory = []
-        var category = []
+        
         var leadersJsonObject = JSON.parse(this.state.Leaders)
-
-
-        for (var categoryName in leadersJsonObject) {
-            category.push(categoryName)
-            teamRankingByCategory.push(leadersJsonObject[categoryName])
+        var category = Object.keys(leadersJsonObject)
+        
+        
+        
+        for (var i = 0; i < category.length; i++) { //sorting algorithm, python cant sort dict properly
+            
+            var sortable = []
+            for (var team in leadersJsonObject[category[i]]) {
+                sortable.push([team, leadersJsonObject[category[i]][team]]);
+            }
+            sortable.sort(function(a, b) {
+                if (category[i] === 'TO') {
+                    return a[1]-b[1]
+                }
+                return b[1] - a[1]
+            })
+            var objSorted = {}
+            sortable.forEach(function(item) {
+                objSorted[item[0]]=item[1]
+            })
+            
+            teamRankingByCategory.push(objSorted)
         }
+        
 
-        await this.setState({ AllLeader: teamRankingByCategory })
+        await this.setState({ StatLeaderInformation: teamRankingByCategory })
         await this.setState({ Categories: category })
         await this.setState({ Loading: false })
+        */
 
-
+        
     }
 
     async assignIndex(i) { //change Category table according to selected tab
         await this.setState({ selectedIndex: i });
     }
 
-    async setKey(e) {
+    async setTabKey(e) {
         await this.setState({activeKey : e})
+        
+        //src={this.state.TeamPhotos[Object.keys(this.state.StatLeaderInformation[this.state.selectedIndex])[0]]} arond line 150
     }
 
 
     render() {
         let leaderInformation = [
-
             this.state.AllData,
             this.state.Categories[this.state.selectedIndex]
         ]
@@ -127,13 +194,20 @@ export default class Leaders extends React.Component {
                                         <Tabs
                                             id="controlled-tab-example"
                                             activeKey={this.state.activeKey}
-                                            onSelect={this.setKey}
+                                            onSelect={this.setTabKey}
                                             className="mb-3"
                                         >
 
-                                            <Tab eventKey="Graph" title="Graph">
-                                                <AverageStats TeamCompareInformation={leaderInformation}></AverageStats>
-                                            </Tab>
+                                            {this.state.Source !== 'Previous' ?
+                                                <Tab eventKey="Graph" title="Graph">
+                                                    <AverageStats TeamCompareInformation={leaderInformation}></AverageStats>
+                                                </Tab>
+
+                                                :
+
+                                                null
+
+                                            }
 
                                             <Tab eventKey="Ranking" title="Ranking">
                                                 <Table striped bordered hover>
@@ -144,9 +218,11 @@ export default class Leaders extends React.Component {
                                                                 <h2> {this.state.Categories[this.state.selectedIndex]} Leader </h2>
                                                                 <Figure>
 
-                                                                    <Figure.Image height='100px'
+                                                                    <Figure.Image 
+                                                                    
+                                                                    height='100px'
                                                                         width='100px' style={{ alignSelf: 'center' }}
-                                                                        src={this.state.TeamPhotos[this.state.AllLeader[this.state.selectedIndex][0][0]]}
+                                                                        
                                                                         thumbnail />
 
 
@@ -156,7 +232,7 @@ export default class Leaders extends React.Component {
 
                                                     </thead>
                                                     {
-                                                        this.state.AllLeader[this.state.selectedIndex].map((teamAndScore, i) => {
+                                                        Object.keys(this.state.StatLeaderInformation[this.state.selectedIndex]).map((team, i) => {
 
                                                             return (
 
@@ -165,15 +241,15 @@ export default class Leaders extends React.Component {
                                                                     <tr>
 
                                                                         {i === 0 ?
-                                                                            <td><i><h2><strong>{teamAndScore[0]}</strong></h2> </i></td>
+                                                                            <td><i><h2><strong>{team}</strong></h2> </i></td>
                                                                             :
-                                                                            <td><h4>{teamAndScore[0]}</h4></td>
+                                                                            <td><h4>{team}</h4></td>
                                                                         }
                                                                         {i === 0 ?
 
-                                                                            <td><i><h2><strong>{teamAndScore[1]}</strong></h2></i></td>
+                                                                            <td><i><h2><strong>{this.state.StatLeaderInformation[this.state.selectedIndex][team]}</strong></h2></i></td>
                                                                             :
-                                                                            <td><h4>{teamAndScore[1]}</h4></td>
+                                                                            <td><h4>{this.state.StatLeaderInformation[this.state.selectedIndex][team]}</h4></td>
                                                                         }
                                                                     </tr>
 

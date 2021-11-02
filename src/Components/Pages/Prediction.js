@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Card, ListGroup, CardColumns, Row, Col } from 'react-bootstrap'
+import { ListGroup, Row, Col } from 'react-bootstrap'
 import axios from 'axios'
 import "../../styles/PageStyle.css"
 
@@ -69,7 +69,7 @@ export default class Prediction extends React.Component {
                                                         {/* bold categories that are greater on one side */}
                                                         <Col lg={4} md={4} xs={4}>
 
-                                                            {item[Object.keys(item)[0]][1][category] > item[Object.keys(item)[1]][1][category] && category !== "TO" ||
+                                                            {(item[Object.keys(item)[0]][1][category] > item[Object.keys(item)[1]][1][category] && category !== "TO") ||
                                                                 (item[Object.keys(item)[0]][1][category] < item[Object.keys(item)[1]][1][category] && category === "TO") ?
 
                                                                 <strong><i>{item[Object.keys(item)[0]][1][category]}</i></strong>
@@ -90,7 +90,7 @@ export default class Prediction extends React.Component {
                                                         </Col>
                                                         <Col lg={4} md={4} xs={4}>
 
-                                                            {item[Object.keys(item)[0]][1][category] < item[Object.keys(item)[1]][1][category] && category !== "TO" ||
+                                                            {(item[Object.keys(item)[0]][1][category] < item[Object.keys(item)[1]][1][category] && category !== "TO") ||
                                                                 (item[Object.keys(item)[0]][1][category] > item[Object.keys(item)[1]][1][category] && category === "TO") ?
 
                                                                 <strong><i>{item[Object.keys(item)[1]][1][category]}</i></strong>

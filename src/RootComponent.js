@@ -11,8 +11,6 @@ import TeamCompare from "./Components/Pages/TeamCompare"
 import CurrentStats from "./Components/Pages/CurrentStats"
 import PreviousWeek from "./Components/Pages/PreviousWeek"
 
-import Maintenance from "./Components/Maintenance/Maintenance"
-import AverageStats from './Components/Pages/AverageStats'
 
 
 
@@ -28,7 +26,8 @@ export default class RootComponent extends React.Component {
             Categories: [],
             AllData: [],
             LoadingButton: true,
-            weekArray: []
+            weekArray: [],
+            photoData: []
 
         };
 
@@ -49,7 +48,9 @@ export default class RootComponent extends React.Component {
 
         var arr = []
         var obj = JSON.parse(this.state.rawDataFromResponse)
-        var dataKeySet = Object.keys(obj)
+        var dataKeySet = Object.keys(obj["TeamData"])
+        this.processPhotoData(obj["TeamPhoto"])
+        obj = obj["TeamData"]
 
         var catArray = []
 
@@ -90,6 +91,16 @@ export default class RootComponent extends React.Component {
 
     }
 
+    async processPhotoData(teamPhotosJsonObject) {
+        var teamPhotoObject = {}
+        for (var team in teamPhotosJsonObject) { //build teamPhotoObject to use as state {TeamName : PhotoURL}
+
+            teamPhotoObject[team] = teamPhotosJsonObject[team]
+        }
+
+        await this.setState({ photoData: teamPhotoObject })
+    }
+
 
     refresh() {
         window.location.reload(false)
@@ -106,6 +117,7 @@ export default class RootComponent extends React.Component {
         let leaderInformation = [
             this.state.Categories,
             this.state.AllData,
+            this.state.photoData
         ]
 
         let teamCompareInformation = [
