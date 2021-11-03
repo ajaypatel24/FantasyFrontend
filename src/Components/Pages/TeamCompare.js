@@ -1,253 +1,243 @@
-
-import React from 'react'
-import { Col, Row, Badge, ListGroup, Tab, Accordion, Alert, Spinner } from 'react-bootstrap'
-import axios from 'axios'
-import "../../styles/PageStyle.css"
-import PlayerData from "../../PlayerData/PlayerData.json"
-
+import React from "react";
+import {
+  Col,
+  Row,
+  Badge,
+  ListGroup,
+  Tab,
+  Accordion,
+  Alert,
+  Spinner,
+} from "react-bootstrap";
+import axios from "axios";
+import "../../styles/PageStyle.css";
+import PlayerData from "../../PlayerData/PlayerData.json";
 
 export default class TeamCompare extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
+    this.state = {
+      ListOfPlayers: [],
+      player: [],
+      TopPlayers: [],
+      TopCategories: [],
+      PlayerName: [],
+      WinningMatchupMap: [],
+      AllData: this.props.TeamCompareInformation[0],
+      WinningHolder: [],
+      loadingComplete: false,
+      show: false,
+      name: "",
+      CategoryLeaderboard: [],
+      timeToUpdate: 0,
+    };
 
-            ListOfPlayers: [],
-            player: [],
-            TopPlayers: [],
-            TopCategories: [],
-            PlayerName: [],
-            WinningMatchupMap: [],
-            AllData: this.props.TeamCompareInformation[0],
-            WinningHolder: [],
-            loadingComplete: false,
-            show: false,
-            name: "",
-            CategoryLeaderboard: [],
-            timeToUpdate: 0
+    this.handleClose = this.handleClose.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
+  }
 
-        };
+  async componentDidMount() {
+    //get all data needed
+    var bodyFormData = new FormData();
+    bodyFormData.append("data", JSON.stringify(this.state.AllData));
 
-        this.handleClose = this.handleClose.bind(this);
-        this.handleOpen = this.handleOpen.bind(this);
+    //count of winning matchups
+    await axios
+      .post(
+        global.config.apiEndpoint.production + "/winning-matchups",
+        bodyFormData
+      )
+
+      .then((response) => {
+        this.setState({ WinningHolder: JSON.stringify(response.data) });
+      });
+
+    //Count of wins against other teams
+    await axios
+      .post(
+        global.config.apiEndpoint.production + "/category-leader",
+        bodyFormData
+      )
+
+      .then((response) => {
+        this.setState({ CategoryLeaderboard: JSON.stringify(response.data) });
+      });
+
+    var winningMatchupArray = []; //usable object that can be mapped
+    var obj = JSON.parse(this.state.WinningHolder); //{Team : Array of WinningMatchupMap Matchups}
+    var PlayerList = Object.keys(obj); //List of players
+
+    PlayerList.forEach(function (item, index) {
+      //populate
+      var key = index
+      var teamWinningMatchupPair = {};
+      teamWinningMatchupPair[item] = obj[item];
+      winningMatchupArray.push(teamWinningMatchupPair);
+    });
+
+    await this.setState({ WinningMatchupMap: winningMatchupArray });
+    await this.setState({ ListOfPlayers: PlayerList });
+
+    var CategoryRankingArray = [];
+    var categoryLeaderboardArray = JSON.parse(this.state.CategoryLeaderboard); //category rankings
+    var categoryArray = [];
+
+    for (var i in categoryLeaderboardArray) {
+      //iterate over categories and leaderboards
+      categoryArray.push(i);
+      CategoryRankingArray.push(categoryLeaderboardArray[i]);
     }
 
-    async componentDidMount() { //get all data needed
-        var bodyFormData = new FormData();
-        bodyFormData.append("data", JSON.stringify(this.state.AllData))
+    await this.setState({ CategoryRanking: CategoryRankingArray });
+    await this.setState({ Categories: categoryArray });
 
-        //count of winning matchups
-        await axios.post(global.config.apiEndpoint.production + '/winning-matchups', bodyFormData)
+    await this.setState({ WinningHolder: [] });
 
-            .then((response) => {
-                this.setState({ WinningHolder: JSON.stringify(response.data) })
-            })
+    var numberOfWinningMatchupsByTeam = [];
+    this.state.WinningMatchupMap.map((item, i) => {
+      numberOfWinningMatchupsByTeam.push(
+        item[this.state.ListOfPlayers[i]].length
+      );
+    });
 
-        //Count of wins against other teams
-        await axios.post(global.config.apiEndpoint.production + '/category-leader', bodyFormData)
+    await this.setState({ WinningHolder: numberOfWinningMatchupsByTeam });
 
-            .then((response) => {
-                this.setState({ CategoryLeaderboard: JSON.stringify(response.data) })
-            })
+    await this.assignPlayer(this.state.ListOfPlayers[0], 0);
 
+    await this.setState({ loadingComplete: true });
+  }
 
-        var winningMatchupArray = [] //usable object that can be mapped
-        var obj = JSON.parse(this.state.WinningHolder) //{Team : Array of WinningMatchupMap Matchups}
-        var PlayerList = Object.keys(obj) //List of players
+  async topPerformers(team) {
+    var bodyFormData = new FormData();
 
+    bodyFormData.append("team", JSON.stringify(team));
 
-        PlayerList.forEach(function (item, index) { //populate 
-            var teamWinningMatchupPair = {}
-            teamWinningMatchupPair[item] = obj[item]
-            winningMatchupArray.push(teamWinningMatchupPair);
-        });
+    var ranking = {};
+    for (var i = 0; i < this.state.CategoryRanking.length - 1; i++) {
 
-        await this.setState({ WinningMatchupMap: winningMatchupArray })
-        await this.setState({ ListOfPlayers: PlayerList })
-
-
-        var CategoryRankingArray = []
-        var categoryLeaderboardArray = JSON.parse(this.state.CategoryLeaderboard) //category rankings
-        var categoryArray = []
-
-       
-
-        for (var i in categoryLeaderboardArray ) { //iterate over categories and leaderboards
-            categoryArray.push(i)
-            CategoryRankingArray.push(categoryLeaderboardArray[i])
+      for (var j = 0; j < this.state.CategoryRanking[0].length; j++) {
+        if (this.state.CategoryRanking[i][j][0] === team) {
+          ranking[this.state.Categories[i]] = j + 1;
         }
-
-        await this.setState({ CategoryRanking: CategoryRankingArray })
-        await this.setState({ Categories: categoryArray })
-
-
-        await this.setState({ WinningHolder: [] })
-
-        
-        var numberOfWinningMatchupsByTeam = []
-        this.state.WinningMatchupMap.map((item, i) => {
-           
-            numberOfWinningMatchupsByTeam.push(item[this.state.ListOfPlayers[i]].length)
-        })
-
-        await this.setState({ WinningHolder: numberOfWinningMatchupsByTeam })
-
-        await this.assignPlayer(this.state.ListOfPlayers[0], 0)
-
-        await this.setState({ loadingComplete: true })
-
-
+      }
     }
 
+    ranking = Object.entries(ranking)
+      .sort((a, b) => a[1] - b[1])
+      .map((el) => el[0]);
+    bodyFormData.append("categoryRanking", JSON.stringify(ranking.slice(0, 3)));
 
+    await axios
+      .post(
+        global.config.apiEndpoint.production + "/TopPerformers",
+        bodyFormData
+      )
+      .then((response) => {
+        this.setState({ TopPlayers: JSON.stringify(response.data) });
+      });
 
-    async topPerformers(team) {
-        var bodyFormData = new FormData();
+    var obj = JSON.parse(this.state.TopPlayers);
 
-        bodyFormData.append("team", JSON.stringify(team))
+    var topThreePlayers = [];
+    var topThreeCategories = [];
 
+    for (var x = 0; x < 3; x++) {
+      topThreePlayers.push(obj[ranking[x]]);
+      topThreeCategories.push(ranking[x]);
+    }
 
+    var ImgString = [];
+    var PlayerNameArray = [];
+    var playerId = [];
 
-        var ranking = {}
-        for (var i = 0; i < this.state.CategoryRanking.length - 1; i++) {
-            //if (this.state.Categories[i].valueOf() === new String("FG%").valueOf() || this.state.Categories[i].valueOf() === new String("FT%").valueOf()) {
-            //    continue;
-            //}
-
-            for (var j = 0; j < this.state.CategoryRanking[0].length; j++) {
-
-                if (this.state.CategoryRanking[i][j][0] === team) {
-                    ranking[this.state.Categories[i]] = j + 1
-                }
-            }
-
+    for (var t = 0; t < topThreePlayers.length; t++) {
+      //find all player images
+      for (var z = 0; z < PlayerData["league"]["standard"].length; z++) {
+        if (
+          PlayerData["league"]["standard"][z]["firstName"] ===
+            topThreePlayers[t]["PlayerFirst"] &&
+          PlayerData["league"]["standard"][z]["lastName"] ===
+            topThreePlayers[t]["PlayerLast"]
+        ) {
+          playerId.push(PlayerData["league"]["standard"][z]["personId"]);
+          break;
         }
-
-        
-        
-
-        ranking = Object.entries(ranking).sort((a, b) => a[1] - b[1]).map(el => el[0])
-        bodyFormData.append("categoryRanking", JSON.stringify(ranking.slice(0,3)))
-
-        
-
-        
-        await axios.post(global.config.apiEndpoint.production + '/TopPerformers', bodyFormData)
-            .then(response => {
-                this.setState({ TopPlayers: JSON.stringify(response.data) })
-            })
-
-        
-        var obj = JSON.parse(this.state.TopPlayers)
-
-        var topThreePlayers = []
-        var topThreeCategories = []
-
-
-        for (var x = 0; x < 3; x++) {
-            topThreePlayers.push(obj[ranking[x]])
-            topThreeCategories.push(ranking[x])
-        }
-
-
-        var ImgString = []
-        var PlayerNameArray = []
-        var playerId = []
-        
-        for (var t = 0; t < topThreePlayers.length; t++) { //find all player images
-            for (var z = 0; z < PlayerData["league"]["standard"].length; z++) {
-                if (PlayerData["league"]["standard"][z]["firstName"] === topThreePlayers[t]["PlayerFirst"]
-                    && PlayerData["league"]["standard"][z]["lastName"] === topThreePlayers[t]["PlayerLast"]) {
-                    playerId.push(PlayerData["league"]["standard"][z]["personId"])
-                    break
-                }
-            }
-        }
-
-        for (var y = 0; y < topThreePlayers.length; y++) { //build image src strings
-            let val = "https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/" + playerId[y] + ".png"
-            ImgString.push(val)
-            PlayerNameArray.push(topThreePlayers[y]["PlayerFirst"] + " " + topThreePlayers[y]["PlayerLast"])
-        }
-
-        
-        
-
-        await this.setState({ TopPlayers: ImgString })
-        await this.setState({ PlayerName: PlayerNameArray })
-        await this.setState({ TopCategories: topThreeCategories })
-        
-        await axios.get(global.config.apiEndpoint.production + '/time-to-update')
-            .then(response => {
-                this.setState({ timeToUpdate: response.data})
-            })
-    
-        
-
-        
-
+      }
     }
 
-    async assignPlayer(player1, i) {
-
-        await this.setState({ player: [player1, i] })
-        //await this.topPerformers(this.state.player[0])
-
+    for (var y = 0; y < topThreePlayers.length; y++) {
+      //build image src strings
+      let val =
+        "https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/" +
+        playerId[y] +
+        ".png";
+      ImgString.push(val);
+      PlayerNameArray.push(
+        topThreePlayers[y]["PlayerFirst"] +
+          " " +
+          topThreePlayers[y]["PlayerLast"]
+      );
     }
 
-    async handleClose() {
-        await this.setState({ show: false })
-    }
+    await this.setState({ TopPlayers: ImgString });
+    await this.setState({ PlayerName: PlayerNameArray });
+    await this.setState({ TopCategories: topThreeCategories });
 
-    async handleOpen(playerName) {
-        await this.setState({ show: true })
-        await this.setState({ name: playerName })
-    }
+    await axios
+      .get(global.config.apiEndpoint.production + "/time-to-update")
+      .then((response) => {
+        this.setState({ timeToUpdate: response.data });
+      });
+  }
 
+  async assignPlayer(player1, i) {
+    await this.setState({ player: [player1, i] });
+    //await this.topPerformers(this.state.player[0])
+  }
 
-    render() {
+  async handleClose() {
+    await this.setState({ show: false });
+  }
 
+  async handleOpen(playerName) {
+    await this.setState({ show: true });
+    await this.setState({ name: playerName });
+  }
 
-        return (
+  render() {
+    return (
+      <div>
+        <div>
+          {this.state.loadingComplete !== false ? (
+            <Tab.Container defaultActiveKey={this.state.ListOfPlayers[0]}>
+              <Row>
+                <Col sm={3}>
+                  <ListGroup>
+                    {this.state.WinningMatchupMap.map((item, index) => {
+                      return (
+                        <ListGroup.Item key={item}
+                          eventKey={this.state.ListOfPlayers[index]}
+                          onClick={() =>
+                            this.assignPlayer(this.state.ListOfPlayers[index], index)
+                          }
+                        >
+                          <h4>{this.state.ListOfPlayers[index]}</h4>
+                        </ListGroup.Item>
+                      );
+                    })}
+                  </ListGroup>
+                </Col>
 
-            <div>
-
-                <div>
-
-                    {this.state.loadingComplete !== false ?
-                        <Tab.Container defaultActiveKey={this.state.ListOfPlayers[0]}>
-                            <Row>
-                                <Col sm={3}>
-
-                                    <ListGroup>
-
-                                        {this.state.WinningMatchupMap.map((item, i) => {
-                                            return (
-
-                                                <ListGroup.Item eventKey={this.state.ListOfPlayers[i]} onClick={() => this.assignPlayer(this.state.ListOfPlayers[i], i)}><h4>{this.state.ListOfPlayers[i]}</h4></ListGroup.Item>
-
-                                            )
-                                        })}
-                                    </ListGroup>
-                                </Col>
-
-                                <Col sm={9}>
-
-                                    <Tab.Content>
-
-                                        <div>
-
-{/* this.state.TopPlayers.length !== 0 ? */}
-                                            { this.state.WinningMatchupMap.length !== 0 ? 
-
-                                                <Row>
-
-                                                    <Col>
-
-                                                        <Row>
-
-                                                        </Row>
-                                                        {/* 
+                <Col sm={9}>
+                  <Tab.Content>
+                    <div>
+                      {/* this.state.TopPlayers.length !== 0 ? */}
+                      {this.state.WinningMatchupMap.length !== 0 ? (
+                        <Row>
+                          <Col>
+                            <Row></Row>
+                            {/* 
                                                         <Row>
                                                             <h4>Top Performers</h4>
                                                             <caption>Time to Next Update {this.state.timeToUpdate} mins</caption>
@@ -290,90 +280,84 @@ export default class TeamCompare extends React.Component {
                                                         </Row>
                                                         */}
 
-                                                        <Row>
-                                                            <Col >
-                                                                <br />
+                            <Row>
+                              <Col>
+                                <br />
 
-                                                                <Alert variant="primary">
-                                                                    <Alert.Heading>
-                                                                        {this.state.WinningMatchupMap[this.state.player[1]][this.state.player[0]].length} Winning Matchups
-                                                                    </Alert.Heading>
-                                                                </Alert>
+                                <Alert variant="primary">
+                                  <Alert.Heading>
+                                    {
+                                      this.state.WinningMatchupMap[
+                                        this.state.player[1]
+                                      ][this.state.player[0]].length
+                                    }{" "}
+                                    Winning Matchups
+                                  </Alert.Heading>
+                                </Alert>
 
-
-                                                                {this.state.WinningMatchupMap[this.state.player[1]][this.state.player[0]].map((WinningMatchup, i) => {
-
-                                                                    return (
-                                                                        <Accordion>
-
-
-                                                                            {[Object.keys(WinningMatchup)].map((teamName, x) => {
-
-                                                                                return (
-
-                                                                                    <Accordion.Item eventKey="q">
-                                                                                        <Accordion.Header><h5>{teamName} : {WinningMatchup[teamName].length}</h5></Accordion.Header>
-                                                                                        <Accordion.Body>
-                                                                                        
-                                                                                            {WinningMatchup[teamName].map((categoryWon, c) => {
-                                                                                                return (
-                                                                                                    
-                                                                                                    <Badge bg="info">{categoryWon}</Badge>
-                                                                                                    
-                                                                                                )
-                                                                                            })}
-                                                                                        
-
-                                                                                        </Accordion.Body>
-                                                                                    </Accordion.Item>
-
-                                                                                )
-                                                                            })}
-
-
-                                                                        </Accordion>
-                                                                    )
-                                                                })}
-                                                            </Col>
-                                                        </Row>
-                                                    </Col>
-                                                </Row>
-
-                                                :
-
-                                                null
-
-                                            }
-
-                                        </div>
-
-                                    </Tab.Content>
-
-                                </Col>
-
+                                {this.state.WinningMatchupMap[
+                                  this.state.player[1]
+                                ][this.state.player[0]].map(
+                                  (WinningMatchup, accordionKey) => {
+                                    return (
+                                      <Accordion key={accordionKey}>
+                                        {[Object.keys(WinningMatchup)].map(
+                                          (teamName, x) => {
+                                            return (
+                                              <Accordion.Item key={x} eventKey="q">
+                                                <Accordion.Header>
+                                                  <h5>
+                                                    {teamName} :{" "}
+                                                    {
+                                                      WinningMatchup[teamName]
+                                                        .length
+                                                    }
+                                                  </h5>
+                                                </Accordion.Header>
+                                                <Accordion.Body>
+                                                  {WinningMatchup[teamName].map(
+                                                    (categoryWon, c) => {
+                                                      return (
+                                                        <Badge key={c} bg="info">
+                                                          {categoryWon}
+                                                        </Badge>
+                                                      );
+                                                    }
+                                                  )}
+                                                </Accordion.Body>
+                                              </Accordion.Item>
+                                            );
+                                          }
+                                        )}
+                                      </Accordion>
+                                    );
+                                  }
+                                )}
+                              </Col>
                             </Row>
-                        </Tab.Container>
-
-
-                        :
-
-                        <Row>
-                            <div>
-                            <Spinner animation="grow" />
-                            </div>
-                        <Row>
-                        <h4>Updating Roster Stats</h4>
+                          </Col>
                         </Row>
-                        <Row>
-                        <p>This may a few minutes</p>
-                        </Row>
-                        </Row>
-                    }
-                </div>
-
-            </div>
-
-        );
-    };
+                      ) : null}
+                    </div>
+                  </Tab.Content>
+                </Col>
+              </Row>
+            </Tab.Container>
+          ) : (
+            <Row>
+              <div>
+                <Spinner animation="grow" />
+              </div>
+              <Row>
+                <h4>Updating Roster Stats</h4>
+              </Row>
+              <Row>
+                <p>This may a few minutes</p>
+              </Row>
+            </Row>
+          )}
+        </div>
+      </div>
+    );
+  }
 }
-

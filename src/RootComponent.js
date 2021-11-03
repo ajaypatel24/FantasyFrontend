@@ -41,7 +41,7 @@ export default class RootComponent extends React.Component {
 
     async componentDidMount() {
 
-        await axios.get(global.config.apiEndpoint.production + '/test')
+        await axios.get(global.config.apiEndpoint.production + '/Full-Data')
             .then(response => {
                 this.setState({ rawDataFromResponse: JSON.stringify(response.data) })
             })
@@ -125,7 +125,8 @@ export default class RootComponent extends React.Component {
         ]
 
         let previousWeekInformation = [
-            this.state.weekArray
+            this.state.weekArray,
+            this.state.photoData
         ]
 
         return (
