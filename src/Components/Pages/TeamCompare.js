@@ -110,7 +110,7 @@ export default class TeamCompare extends React.Component {
 
   async topPerformers(team) {
     var bodyFormData = new FormData();
-
+    console.log(this.state.CategoryRanking)
     bodyFormData.append("team", JSON.stringify(team));
 
     var ranking = {};
@@ -123,11 +123,17 @@ export default class TeamCompare extends React.Component {
       }
     }
 
+    ranking = {"FG%": 1, "ST": 2, "FT%": 1, "PTS":4}
+
     ranking = Object.entries(ranking)
       .sort((a, b) => a[1] - b[1])
       .map((el) => el[0]);
     bodyFormData.append("categoryRanking", JSON.stringify(ranking.slice(0, 3)));
 
+    
+    console.log(bodyFormData.get("team"))
+    console.log(bodyFormData.get("categoryRanking"))
+    /*
     await axios
       .post(
         global.config.apiEndpoint.production + "/TopPerformers",
@@ -189,11 +195,13 @@ export default class TeamCompare extends React.Component {
       .then((response) => {
         this.setState({ timeToUpdate: response.data });
       });
+
+    */
   }
 
   async assignPlayer(player1, i) {
     await this.setState({ player: [player1, i] });
-    //await this.topPerformers(this.state.player[0])
+    await this.topPerformers(this.state.player[0])
   }
 
   async handleClose() {
