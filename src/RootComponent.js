@@ -10,6 +10,7 @@ import Prediction from "./Components/Pages/Prediction"
 import TeamCompare from "./Components/Pages/TeamCompare"
 import CurrentStats from "./Components/Pages/CurrentStats"
 import PreviousWeek from "./Components/Pages/PreviousWeek"
+import PlayerZScore from "./Components/Pages/PlayerZScore"
 
 
 
@@ -146,6 +147,7 @@ export default class RootComponent extends React.Component {
                                 <Button href="#/Leaders" variant="dark" id="2" >Leaders</Button>
                                 <Button href="#/Compare" variant="dark" id="3" >Team vs Other Teams</Button>
                                 <Button href="#/Prediction" variant="dark" id="4" >Predictions</Button>
+                                <Button href="#/PlayerRating" variant="dark" id="5" >Player Rating</Button>
                                 
                             </Nav>
 
@@ -179,7 +181,7 @@ export default class RootComponent extends React.Component {
                                             />
                                             <Route exact path="/Prediction" component={Prediction} />
 
-                                            
+                                            <Route exact path="/PlayerRating" component={PlayerZScore} />
 
                                             <Route path="/" render={(props) => (
                                                 <CurrentStats {...props} CurrentStatInformation={currentStatInformation} />)}
