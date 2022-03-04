@@ -70,7 +70,7 @@ export default class TeamCompare extends React.Component {
 
     PlayerList.forEach(function (item, index) {
       //populate
-      var key = index
+      var key = index;
       var teamWinningMatchupPair = {};
       teamWinningMatchupPair[item] = obj[item];
       winningMatchupArray.push(teamWinningMatchupPair);
@@ -110,12 +110,11 @@ export default class TeamCompare extends React.Component {
 
   async topPerformers(team) {
     var bodyFormData = new FormData();
-    console.log(this.state.CategoryRanking)
+    console.log(this.state.CategoryRanking);
     bodyFormData.append("team", JSON.stringify(team));
 
     var ranking = {};
     for (var i = 0; i < this.state.CategoryRanking.length - 1; i++) {
-
       for (var j = 0; j < this.state.CategoryRanking[0].length; j++) {
         if (this.state.CategoryRanking[i][j][0] === team) {
           ranking[this.state.Categories[i]] = j + 1;
@@ -123,16 +122,15 @@ export default class TeamCompare extends React.Component {
       }
     }
 
-    ranking = {"FG%": 1, "ST": 2, "FT%": 1, "PTS":4}
+    ranking = { "FG%": 1, ST: 2, "FT%": 1, PTS: 4 };
 
     ranking = Object.entries(ranking)
       .sort((a, b) => a[1] - b[1])
       .map((el) => el[0]);
     bodyFormData.append("categoryRanking", JSON.stringify(ranking.slice(0, 3)));
 
-    
-    console.log(bodyFormData.get("team"))
-    console.log(bodyFormData.get("categoryRanking"))
+    console.log(bodyFormData.get("team"));
+    console.log(bodyFormData.get("categoryRanking"));
     /*
     await axios
       .post(
@@ -201,7 +199,7 @@ export default class TeamCompare extends React.Component {
 
   async assignPlayer(player1, i) {
     await this.setState({ player: [player1, i] });
-    await this.topPerformers(this.state.player[0])
+    await this.topPerformers(this.state.player[0]);
   }
 
   async handleClose() {
@@ -224,10 +222,14 @@ export default class TeamCompare extends React.Component {
                   <ListGroup>
                     {this.state.WinningMatchupMap.map((item, index) => {
                       return (
-                        <ListGroup.Item key={item}
+                        <ListGroup.Item
+                          key={item}
                           eventKey={this.state.ListOfPlayers[index]}
                           onClick={() =>
-                            this.assignPlayer(this.state.ListOfPlayers[index], index)
+                            this.assignPlayer(
+                              this.state.ListOfPlayers[index],
+                              index
+                            )
                           }
                         >
                           <h4>{this.state.ListOfPlayers[index]}</h4>
@@ -312,7 +314,10 @@ export default class TeamCompare extends React.Component {
                                         {[Object.keys(WinningMatchup)].map(
                                           (teamName, x) => {
                                             return (
-                                              <Accordion.Item key={x} eventKey="q">
+                                              <Accordion.Item
+                                                key={x}
+                                                eventKey="q"
+                                              >
                                                 <Accordion.Header>
                                                   <h5>
                                                     {teamName} :{" "}
@@ -326,7 +331,10 @@ export default class TeamCompare extends React.Component {
                                                   {WinningMatchup[teamName].map(
                                                     (categoryWon, c) => {
                                                       return (
-                                                        <Badge key={c} bg="info">
+                                                        <Badge
+                                                          key={c}
+                                                          bg="info"
+                                                        >
                                                           {categoryWon}
                                                         </Badge>
                                                       );

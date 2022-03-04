@@ -15,24 +15,21 @@ export default class CurrentStats extends React.Component {
       dataArray: this.props.CurrentStatInformation[1],
       Players: this.props.CurrentStatInformation[2],
       hold: "",
-      Streak: ""
+      Streak: "",
     };
   }
 
   async componentDidMount() {
     await axios
-    .get(
-      global.config.apiEndpoint.production + "/streak",
-    )
+      .get(global.config.apiEndpoint.production + "/streak")
 
-    .then((response) => {
-      this.setState({ hold: response.data });
-    });
+      .then((response) => {
+        this.setState({ hold: response.data });
+      });
 
-    let Teams = Object.keys(this.state.Streak)
-    
+    let Teams = Object.keys(this.state.Streak);
 
-    await this.setState({Streak: this.state.hold})
+    await this.setState({ Streak: this.state.hold });
   }
 
   render() {
@@ -41,29 +38,22 @@ export default class CurrentStats extends React.Component {
         <h1 style={{ textAlign: "center" }}>Current Week Stats by Team</h1>
 
         <Table className="StatTable" responsive>
-
-              
-                {Object.keys(this.state.Streak).map((item, index) => {
-                  return (
-                    
-                      <tr>
-                      <h1>{item}</h1>
-                      {this.state.Streak[item]['W'] > this.state.Streak[item]['L'] ? 
-                      
-                        <Badge bg="success"><h1>W{this.state.Streak[item]['W']}</h1></Badge>
-                        
-                      
-                        :
-                        <Badge bg="danger"><h1>L{this.state.Streak[item]['L']}</h1></Badge>
-                        
-                      }
-                      </tr>
-                      
-                    
-                  )
-                })}
-              
-
+          {Object.keys(this.state.Streak).map((item, index) => {
+            return (
+              <tr>
+                <h1>{item}</h1>
+                {this.state.Streak[item]["W"] > this.state.Streak[item]["L"] ? (
+                  <Badge bg="success">
+                    <h1>W{this.state.Streak[item]["W"]}</h1>
+                  </Badge>
+                ) : (
+                  <Badge bg="danger">
+                    <h1>L{this.state.Streak[item]["L"]}</h1>
+                  </Badge>
+                )}
+              </tr>
+            );
+          })}
         </Table>
       </div>
     );

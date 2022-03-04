@@ -28,6 +28,7 @@ export default class Leaders extends React.Component {
       selectedPlayerStats: [],
       selectedPlayerPhoto: "",
       options: [],
+      leagueAverage: [],
     };
 
     this.handleSelect = this.handleSelect.bind(this);
@@ -41,7 +42,11 @@ export default class Leaders extends React.Component {
         this.setState({ PlayerZScoreData: response.data });
       });
 
-    console.log(this.state.PlayerZScoreData);
+    await this.setState({
+      leagueAverage: this.state.PlayerZScoreData["league_average"],
+    });
+
+    console.log(this.state.leagueAverage);
 
     await this.setState({
       PlayerArray: Object.values(this.state.PlayerZScoreData),
@@ -97,15 +102,16 @@ export default class Leaders extends React.Component {
         {this.state.PlayerZScoreData.length === 0 ? (
           <p></p>
         ) : (
-          <Row>
-            <Col>
-              <Select
-                options={this.state.options}
-                onChange={this.handleSelect}
-              />
-            </Col>
-            <Col>
-              <Row>{this.state.selectedPlayer}</Row>
+          <Col>
+            <Row>
+              <Col lg="8">
+                <Select
+                  options={this.state.options}
+                  onChange={this.handleSelect}
+                />
+              </Col>
+            </Row>
+            <Row>
               {this.state.selectedPlayerStats.length != 0 &&
               this.state.selectedPlayerPhoto != "" ? (
                 <div>
@@ -127,19 +133,52 @@ export default class Leaders extends React.Component {
                                 this.state.selectedPlayer
                               ][stat] < 0.0
                             ) {
-                              return <Badge bg="success">{stat}</Badge>;
+                              return (
+                                <Badge bg="success">
+                                  {stat}{" "}
+                                  {
+                                    this.state.PlayerZScoreData[
+                                      this.state.selectedPlayer
+                                    ][stat]
+                                  }
+                                  {" league average: "}
+                                  {this.state.leagueAverage[stat]}
+                                </Badge>
+                              );
                             } else if (
                               this.state.PlayerZScoreData[
                                 this.state.selectedPlayer
                               ][stat] > 0.0
                             ) {
-                              return <Badge bg="danger">{stat}</Badge>;
+                              return (
+                                <Badge bg="danger">
+                                  {stat}{" "}
+                                  {
+                                    this.state.PlayerZScoreData[
+                                      this.state.selectedPlayer
+                                    ][stat]
+                                  }
+                                  {" league average: "}
+                                  {this.state.leagueAverage[stat]}
+                                </Badge>
+                              );
                             } else if (
                               this.state.PlayerZScoreData[
                                 this.state.selectedPlayer
                               ][stat] === 0.0
                             ) {
-                              return <Badge bg="secondary">{stat}</Badge>;
+                              return (
+                                <Badge bg="secondary">
+                                  {stat}{" "}
+                                  {
+                                    this.state.PlayerZScoreData[
+                                      this.state.selectedPlayer
+                                    ][stat]
+                                  }
+                                  {" league average: "}
+                                  {this.state.leagueAverage[stat]}
+                                </Badge>
+                              );
                             }
                           }
                           if (
@@ -147,36 +186,65 @@ export default class Leaders extends React.Component {
                               this.state.selectedPlayer
                             ][stat] > 0.0
                           ) {
-                            return <Badge bg="success">{stat}</Badge>;
+                            return (
+                              <Badge bg="success">
+                                {stat}{" "}
+                                {
+                                  this.state.PlayerZScoreData[
+                                    this.state.selectedPlayer
+                                  ][stat]
+                                }
+                                {" league average: "}
+                                {this.state.leagueAverage[stat]}
+                              </Badge>
+                            );
                           } else if (
                             this.state.PlayerZScoreData[
                               this.state.selectedPlayer
                             ][stat] < 0.0
                           ) {
-                            return <Badge bg="danger">{stat}</Badge>;
+                            return (
+                              <Badge bg="danger">
+                                {stat}{" "}
+                                {
+                                  this.state.PlayerZScoreData[
+                                    this.state.selectedPlayer
+                                  ][stat]
+                                }
+                                {" league average: "}
+                                {this.state.leagueAverage[stat]}
+                              </Badge>
+                            );
                           } else if (
                             this.state.PlayerZScoreData[
                               this.state.selectedPlayer
                             ][stat] === 0.0
                           ) {
-                            return <Badge bg="secondary">{stat}</Badge>;
+                            return (
+                              <Badge bg="secondary">
+                                {stat}{" "}
+                                {
+                                  this.state.PlayerZScoreData[
+                                    this.state.selectedPlayer
+                                  ][stat]
+                                }
+                                {" league average: "}
+                                {this.state.leagueAverage[stat]}
+                              </Badge>
+                            );
                           } else {
                             return null;
                           }
                         })()}
                       </div>
 
-                      {
-                        this.state.PlayerZScoreData[this.state.selectedPlayer][
-                          stat
-                        ]
-                      }
+                      {}
                     </Row>
                   ))}
                 </div>
               ) : null}
-            </Col>
-          </Row>
+            </Row>
+          </Col>
         )}
       </div>
     );

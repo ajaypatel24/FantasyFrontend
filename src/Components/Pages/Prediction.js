@@ -63,7 +63,10 @@ export default class Prediction extends React.Component {
                     {Object.keys(item[Object.keys(item)[0]][1]).map(
                       (category, z) => {
                         return (
-                          <ListGroup.Item key={z} style={{ textAlign: "center" }}>
+                          <ListGroup.Item
+                            key={z}
+                            style={{ textAlign: "center" }}
+                          >
                             <Row>
                               {/* bold categories that are greater on one side */}
                               <Col lg={4} md={4} xs={4}>
