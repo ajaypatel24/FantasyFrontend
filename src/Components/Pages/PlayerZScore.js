@@ -10,6 +10,7 @@ import {
   Dropdown,
   DropdownButton,
   Badge,
+  Toast,
 } from "react-bootstrap";
 import axios from "axios";
 import "../../styles/PageStyle.css";
@@ -90,6 +91,11 @@ export default class Leaders extends React.Component {
           selectedPlayerStats: Object.keys(this.state.PlayerZScoreData[x]),
         });
 
+        this.state.PlayerZScoreData[x]["Player"] = this.state.PlayerZScoreData[
+          x
+        ]["Player"]
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
         let playerNameArray =
           this.state.PlayerZScoreData[x]["Player"].split(" ");
 
