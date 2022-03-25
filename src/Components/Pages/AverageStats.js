@@ -149,7 +149,7 @@ export default class AverageStats extends PureComponent {
                     stroke="red"
                   />
                   <Bar dataKey="value" fill="#82ca9d">
-                    <LabelList dataKeu="value" position="top" />
+                    <LabelList dataKey="value" position="top" />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
