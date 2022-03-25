@@ -110,7 +110,7 @@ export default class TeamCompare extends React.Component {
 
   async topPerformers(team) {
     var bodyFormData = new FormData();
-    console.log(this.state.CategoryRanking);
+
     bodyFormData.append("team", JSON.stringify(team));
 
     var ranking = {};
@@ -129,8 +129,6 @@ export default class TeamCompare extends React.Component {
       .map((el) => el[0]);
     bodyFormData.append("categoryRanking", JSON.stringify(ranking.slice(0, 3)));
 
-    console.log(bodyFormData.get("team"));
-    console.log(bodyFormData.get("categoryRanking"));
     /*
     await axios
       .post(

@@ -61,15 +61,9 @@ export default class Leaders extends React.Component {
       leagueAverage: this.state.PlayerZScoreData["league_average"],
     });
 
-    console.log(this.state.PlayerZScoreData);
-
-    console.log(this.state.leagueAverage);
-
     await this.setState({
       PlayerArray: Object.values(this.state.PlayerZScoreData),
     });
-
-    console.log(this.state.PlayerArray);
 
     let optionArray = [];
     for (const element of this.state.PlayerArray) {
@@ -81,11 +75,8 @@ export default class Leaders extends React.Component {
   }
 
   async handleSelect(e) {
-    console.log("trigger");
-    console.log(e);
     for (const x of Object.keys(this.state.PlayerZScoreData)) {
       if (x.includes(e["value"])) {
-        console.log(x);
         await this.setState({ selectedPlayer: x });
         await this.setState({
           selectedPlayerStats: Object.keys(this.state.PlayerZScoreData[x]),
@@ -118,13 +109,10 @@ export default class Leaders extends React.Component {
       }
     }
 
-    console.log(this.state.PlayerZScoreData[this.state.selectedPlayer]);
-
     let keyArray = Object.keys(
       this.state.PlayerZScoreData[this.state.selectedPlayer]
     );
 
-    console.log(keyArray);
     let graphData = [];
     for (let i = 0; i < keyArray.length; i++) {
       const graphElement = {};
@@ -140,11 +128,7 @@ export default class Leaders extends React.Component {
       }
     }
 
-    console.log(graphData);
     await this.setState({ GraphData: graphData });
-
-    console.log(this.state.leagueAverage);
-    console.log(Object.keys(this.state.leagueAverage).length);
   }
   render() {
     return (
