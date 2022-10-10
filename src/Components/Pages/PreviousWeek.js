@@ -46,24 +46,27 @@ export default class PreviousWeek extends React.Component {
     bodyFormData.append("week", week);
 
     await axios
-      .post(global.config.apiEndpoint.production + "/Full-Data", bodyFormData)
+      .post(
+        global.config.apiEndpoint.production + "/full-team-data",
+        bodyFormData
+      )
       .then((response) => {
         this.setState({ AllData: JSON.stringify(response.data) });
       });
 
     var obj = JSON.parse(this.state.AllData);
 
-    await this.setState({ AllData: obj["AllData"] });
-    await this.setState({ LeaderProp: obj["Leader"] });
-    await this.setState({ WeekNumber: obj["WeekNumber"] });
+    await this.setState({ AllData: obj["all_data"] });
+    await this.setState({ LeaderProp: obj["leader"] });
+    await this.setState({ WeekNumber: obj["week_number"] });
 
     var winningMatchupArray = []; //usable object that can be mapped
-    var PlayerList = Object.keys(obj["WinningMatchup"]); //List of players
+    var PlayerList = Object.keys(obj["winning_matchup"]); //List of players
 
     PlayerList.forEach(function (player, index) {
       //populate
       var teamWinningMatchupPair = {};
-      teamWinningMatchupPair[player] = obj["WinningMatchup"][player];
+      teamWinningMatchupPair[player] = obj["winning_matchup"][player];
       winningMatchupArray.push(teamWinningMatchupPair);
     });
 

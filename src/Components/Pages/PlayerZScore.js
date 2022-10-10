@@ -51,7 +51,7 @@ export default class Leaders extends React.Component {
 
   async componentDidMount() {
     await axios
-      .get(global.config.apiEndpoint.production + "/player_zscore")
+      .get(global.config.apiEndpoint.production + "/player-zscore")
 
       .then((response) => {
         this.setState({ PlayerZScoreData: response.data });
