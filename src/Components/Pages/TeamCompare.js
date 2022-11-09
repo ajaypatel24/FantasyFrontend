@@ -30,7 +30,7 @@ export default class TeamCompare extends React.Component {
       show: false,
       name: "",
       CategoryLeaderboard: [],
-      timeToUpdate: 0,
+      get_time_to_update: 0,
     };
 
     this.handleClose = this.handleClose.bind(this);
@@ -132,7 +132,7 @@ export default class TeamCompare extends React.Component {
     /*
     await axios
       .post(
-        global.config.apiEndpoint.production + "/TopPerformers",
+        global.config.apiEndpoint.production + "/top-performers",
         bodyFormData
       )
       .then((response) => {
@@ -189,7 +189,7 @@ export default class TeamCompare extends React.Component {
     await axios
       .get(global.config.apiEndpoint.production + "/time-to-update")
       .then((response) => {
-        this.setState({ timeToUpdate: response.data });
+        this.setState({ get_time_to_update: response.data });
       });
 
     */
@@ -248,7 +248,7 @@ export default class TeamCompare extends React.Component {
                             {/* 
                                                         <Row>
                                                             <h4>Top Performers</h4>
-                                                            <caption>Time to Next Update {this.state.timeToUpdate} mins</caption>
+                                                            <caption>Time to Next Update {this.state.get_time_to_update} mins</caption>
                                                             
 
                                                         </Row>
