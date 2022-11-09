@@ -36,12 +36,22 @@ export default class Prediction extends React.Component {
     return (
       <Col>
         <h1 style={{ textAlign: "center" }}>
+          Predictions are not working right now
+        </h1>
+        {/*
+        <h1 style={{ textAlign: "center" }}>
           Matchup Predictions Week {this.state.CurrentWeek}
         </h1>
+        
         <h6 style={{ textAlign: "center" }}>
           Not enough data yet for this to be close to accurate
         </h6>
+      */}
 
+        <h3 style={{ textAlign: "center" }}>
+          Coming back soon, working on fix...
+        </h3>
+        {/*
         {this.state.Prediction.length !== 0 ? (
           <ListGroup>
             <Row>
@@ -68,7 +78,7 @@ export default class Prediction extends React.Component {
                             style={{ textAlign: "center" }}
                           >
                             <Row>
-                              {/* bold categories that are greater on one side */}
+                              { bold categories that are greater on one side }
                               <Col lg={4} md={4} xs={4}>
                                 {(item[Object.keys(item)[0]][1][category] >
                                   item[Object.keys(item)[1]][1][category] &&
@@ -123,7 +133,7 @@ export default class Prediction extends React.Component {
               })}
             </Row>
           </ListGroup>
-        ) : null}
+        ) : null} */}
       </Col>
     );
   }

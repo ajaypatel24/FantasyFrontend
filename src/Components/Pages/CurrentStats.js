@@ -10,6 +10,8 @@ import {
   Button,
   Jumbotron,
   Image,
+  Spinner,
+  Modal,
 } from "react-bootstrap";
 import axios from "axios";
 import "../../styles/PageStyle.css";
@@ -28,20 +30,41 @@ export default class CurrentStats extends React.Component {
       TeamPhoto: this.props.CurrentStatInformation[3],
       hold: "",
       Streak: "",
+      injury: "",
+      test: "",
+      teamTransactions: "",
+      show: false,
+      selectedTeam: "",
     };
+
+    this.handleClose = this.handleClose.bind(this);
+    this.handleShow = this.handleShow.bind(this);
   }
 
   async componentDidMount() {
+    let Teams = Object.keys(this.state.Streak);
     await axios
-      .get(global.config.apiEndpoint.production + "/streak")
+      .get(global.config.apiEndpoint.production + "/v2/transactions")
 
       .then((response) => {
-        this.setState({ hold: response.data });
+        this.setState({ teamTransactions: response.data });
       });
+    await axios
+      .get(global.config.apiEndpoint.production + "/team-injury")
 
-    let Teams = Object.keys(this.state.Streak);
+      .then((response) => {
+        this.setState({ injury: response.data });
+      });
+    console.log(this.state.teamTransactions);
+  }
 
-    await this.setState({ Streak: this.state.hold });
+  async handleShow(e) {
+    await this.setState({ show: true });
+    await this.setState({ selectedTeam: e.target.id });
+  }
+
+  async handleClose() {
+    await this.setState({ show: false });
   }
 
   render() {
@@ -50,49 +73,115 @@ export default class CurrentStats extends React.Component {
         <h1 style={{ textAlign: "center" }}>Current Week Stats by Team</h1>
 
         <ListGroup>
-          {Object.keys(this.state.Streak).map((item, index) => {
+          {this.state.Players.map((item, index) => {
             return (
               <ListGroup.Item>
                 <Row>
                   <h1>{item}</h1>
                 </Row>
+
                 <Row>
-                  <Col lg="3">
+                  <Col lg="3" md="3" sm="12" xs="12">
                     <img
+                      width="70%"
+                      height="70%"
                       src={this.state.TeamPhoto[item]}
                       class="img-thumbnail"
                     />
                   </Col>
-                  <Col lg="9">
-                    <Table striped bordered hover>
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Username</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <td>3</td>
-                          <td colSpan={2}>Larry the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </Table>
+                  <Col lg="3" md="3" sm="12" xs="12">
+                    <ListGroup as="ol" numbered>
+                      {this.state.injury.length === 0 ? (
+                        <div>
+                          <Spinner animation="grow" variant="dark" />{" "}
+                          <strong>Loading injuries</strong>
+                        </div>
+                      ) : (
+                        <div>
+                          {Object.keys(this.state.injury[item]).map((t, s) => {
+                            return (
+                              <ListGroup.Item
+                                as="li"
+                                className="d-flex justify-content-between align-items-start"
+                              >
+                                <div className="ms-2 me-auto">
+                                  <div className="fw-bold">{t}</div>
+                                  <Badge bg="danger">
+                                    {this.state.injury[item][t]}
+                                  </Badge>
+                                </div>
+                              </ListGroup.Item>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </ListGroup>
+                  </Col>
+                  <Col lg="3" md="3" sm="12" xs="12">
+                    <Button
+                      variant="primary"
+                      id={item}
+                      onClick={this.handleShow}
+                    >
+                      See Transactions
+                    </Button>
+
+                    <Modal show={this.state.show} onHide={this.handleClose}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>
+                          {this.state.selectedTeam} Transactions
+                        </Modal.Title>
+                      </Modal.Header>
+                      {this.state.teamTransactions.length === 0 ||
+                      this.state.selectedTeam === "" ? (
+                        <Modal.Body>
+                          <Spinner animation="grow" variant="dark" />{" "}
+                          <strong>Loading Transactions</strong>
+                        </Modal.Body>
+                      ) : (
+                        <Modal.Body>
+                          <ListGroup>
+                            {Object.keys(
+                              this.state.teamTransactions[
+                                this.state.selectedTeam
+                              ]
+                            ).map((t, s) => {
+                              return (
+                                <ListGroup.Item
+                                  as="li"
+                                  className="d-flex justify-content-between align-items-start"
+                                >
+                                  {
+                                    this.state.teamTransactions[
+                                      this.state.selectedTeam
+                                    ][t]["player_name"]
+                                  }
+                                  {this.state.teamTransactions[
+                                    this.state.selectedTeam
+                                  ][t]["transaction"] === "add" ? (
+                                    <Badge bg="success">
+                                      {
+                                        this.state.teamTransactions[
+                                          this.state.selectedTeam
+                                        ][t]["transaction"]
+                                      }{" "}
+                                    </Badge>
+                                  ) : (
+                                    <Badge bg="danger">
+                                      {
+                                        this.state.teamTransactions[
+                                          this.state.selectedTeam
+                                        ][t]["transaction"]
+                                      }{" "}
+                                    </Badge>
+                                  )}
+                                </ListGroup.Item>
+                              );
+                            })}
+                          </ListGroup>
+                        </Modal.Body>
+                      )}
+                    </Modal>
                   </Col>
                 </Row>
               </ListGroup.Item>

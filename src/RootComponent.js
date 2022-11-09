@@ -32,6 +32,8 @@ export default class RootComponent extends React.Component {
       LoadingButton: true,
       weekArray: [],
       photoData: [],
+      teamInjury: "",
+      teamTransactions: "",
     };
 
     this.refresh = this.refresh.bind(this);
