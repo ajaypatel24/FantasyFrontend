@@ -11,6 +11,7 @@ import {
   DropdownButton,
 } from "react-bootstrap";
 import axios from "axios";
+import Select from "react-select";
 import "../../styles/PageStyle.css";
 import Leaders from "./Leaders";
 
@@ -31,6 +32,7 @@ export default class PreviousWeek extends React.Component {
       weekArray: this.props.WeekInformation[0],
       TeamPhotos: this.props.WeekInformation[1],
       leaderInformation: [],
+      weekinfo: [],
     };
 
     this.handleClose = this.handleClose.bind(this);
@@ -40,10 +42,18 @@ export default class PreviousWeek extends React.Component {
     this.handler = this.handler.bind(this);
   }
 
+  async componentDidMount() {
+    this.props.WeekInformation[0].map((option) => {
+      this.state.weekinfo.push({ value: option, label: option });
+    });
+    console.log(this.state.weekinfo);
+  }
+
   async getWeekDataByNumber(week) {
     //get all data needed
+    console.log(week["value"]);
     var bodyFormData = new FormData();
-    bodyFormData.append("week", week);
+    bodyFormData.append("week", week["value"]);
 
     await axios
       .post(
@@ -108,6 +118,7 @@ export default class PreviousWeek extends React.Component {
 
   handleSelect(e) {
     this.getWeekDataByNumber(e);
+    console.log(e["value"]);
   }
 
   render() {
@@ -117,28 +128,31 @@ export default class PreviousWeek extends React.Component {
           {this.state.loadingComplete !== false ? (
             <Tab.Container defaultActiveKey={this.state.ListOfPlayers[0]}>
               <Row>
-                <Col>
+                <Col lg="3">
                   <h1>Week {this.state.WeekNumber}</h1>
                 </Col>
-                <Col>
-                  <DropdownButton
-                    title="Select Previous Week"
-                    onSelect={this.handleSelect}
-                  >
-                    {this.props.WeekInformation[0].map((option) => (
-                      <Dropdown.Item eventKey={option}>
-                        Week {option}
-                      </Dropdown.Item>
-                    ))}
-                  </DropdownButton>
+                <Col lg="3">
+                  <Select
+                    options={this.state.weekinfo}
+                    onChange={this.handleSelect}
+                  />
                 </Col>
               </Row>
+              <br />
               <Row>
-                {this.state.leaderInformation.length === 0 ? null : (
-                  <Leaders LeaderInformation={this.state.leaderInformation} />
-                )}
+                <h1>Category Leaders</h1>
+              </Row>
+              <Row>
+                <Col>
+                  {this.state.leaderInformation.length === 0 ? null : (
+                    <Leaders LeaderInformation={this.state.leaderInformation} />
+                  )}
+                </Col>
               </Row>
 
+              <Row>
+                <h1>Winning Matchups</h1>
+              </Row>
               <Row>
                 <Col sm={3}>
                   <ListGroup>
@@ -225,16 +239,17 @@ export default class PreviousWeek extends React.Component {
               </Row>
             </Tab.Container>
           ) : (
-            <div>
-              <DropdownButton
-                title="Select Previous Week"
-                onSelect={this.handleSelect}
-              >
-                {this.props.WeekInformation[0].map((option) => (
-                  <Dropdown.Item eventKey={option}>Week {option}</Dropdown.Item>
-                ))}
-              </DropdownButton>
-            </div>
+            <Col>
+              <Row>
+                <h4>Select Week</h4>
+              </Row>
+              <Row lg="4">
+                <Select
+                  options={this.state.weekinfo}
+                  onChange={this.handleSelect}
+                />
+              </Row>
+            </Col>
           )}
         </div>
       </div>
