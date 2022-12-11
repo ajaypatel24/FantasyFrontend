@@ -46,12 +46,11 @@ export default class PreviousWeek extends React.Component {
     this.props.WeekInformation[0].map((option) => {
       this.state.weekinfo.push({ value: option, label: option });
     });
-    console.log(this.state.weekinfo);
   }
 
   async getWeekDataByNumber(week) {
     //get all data needed
-    console.log(week["value"]);
+
     var bodyFormData = new FormData();
     bodyFormData.append("week", week["value"]);
 
@@ -118,7 +117,6 @@ export default class PreviousWeek extends React.Component {
 
   handleSelect(e) {
     this.getWeekDataByNumber(e);
-    console.log(e["value"]);
   }
 
   render() {
