@@ -83,10 +83,11 @@ export default class CurrentStats extends React.Component {
     return (
       <Container>
         <h1 style={{ textAlign: "center" }}>Current Week Stats by Team</h1>
-        <CardGroup>
-          {this.state.Players.map((item, index) => {
-            return (
-              <Card style={{ width: "18rem" }}>
+
+        {this.state.Players.map((item, index) => {
+          return (
+            <Row>
+              <Card style={{ width: "30rem" }}>
                 <Col>
                   <Card.Img variant="top" src={this.state.TeamPhoto[item]} />
                   <Card.Body>
@@ -205,9 +206,9 @@ export default class CurrentStats extends React.Component {
                   </Card.Footer>
                 </Col>
               </Card>
-            );
-          })}
-        </CardGroup>
+            </Row>
+          );
+        })}
       </Container>
     );
   }
