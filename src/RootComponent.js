@@ -34,6 +34,7 @@ export default class RootComponent extends React.Component {
       photoData: [],
       teamInjury: "",
       teamTransactions: "",
+      teamMap: "",
     };
 
     this.refresh = this.refresh.bind(this);
@@ -87,6 +88,12 @@ export default class RootComponent extends React.Component {
     }
 
     await this.setState({ weekArray: allWeekArray });
+
+    await axios
+      .get(global.config.apiEndpoint.production + "/team-map")
+      .then((response) => {
+        this.setState({ teamMap: response.data });
+      });
   }
 
   async processPhotoData(teamPhotosJsonObject) {
@@ -120,7 +127,11 @@ export default class RootComponent extends React.Component {
 
     let teamCompareInformation = [this.state.AllData];
 
-    let previousWeekInformation = [this.state.weekArray, this.state.photoData];
+    let previousWeekInformation = [
+      this.state.weekArray,
+      this.state.photoData,
+      this.state.teamMap,
+    ];
 
     return (
       <div>

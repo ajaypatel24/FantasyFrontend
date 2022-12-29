@@ -31,6 +31,7 @@ export default class PreviousWeek extends React.Component {
       LeaderProp: [],
       weekArray: this.props.WeekInformation[0],
       TeamPhotos: this.props.WeekInformation[1],
+      teamMap: this.props.WeekInformation[2],
       leaderInformation: [],
       weekinfo: [],
     };
@@ -40,6 +41,7 @@ export default class PreviousWeek extends React.Component {
     this.getWeekDataByNumber = this.getWeekDataByNumber.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handler = this.handler.bind(this);
+    this.map_team_name = this.map_team_name.bind(this);
   }
 
   async componentDidMount() {
@@ -72,14 +74,19 @@ export default class PreviousWeek extends React.Component {
     var winningMatchupArray = []; //usable object that can be mapped
     var PlayerList = Object.keys(obj["winning_matchup"]); //List of players
 
-    PlayerList.forEach(function (player, index) {
+    PlayerList.forEach(async function (player, index) {
       //populate
       var teamWinningMatchupPair = {};
+
       teamWinningMatchupPair[player] = obj["winning_matchup"][player];
+
       winningMatchupArray.push(teamWinningMatchupPair);
     });
 
+    console.log(winningMatchupArray);
+
     await this.setState({ WinningMatchupMap: winningMatchupArray });
+
     await this.setState({ ListOfPlayers: PlayerList });
 
     await this.assignPlayer(this.state.ListOfPlayers[0], 0);
@@ -113,6 +120,11 @@ export default class PreviousWeek extends React.Component {
   async handleOpen(playerName) {
     await this.setState({ show: true });
     await this.setState({ name: playerName });
+  }
+
+  map_team_name(name) {
+    console.log(name);
+    return this.state.teamMap[name];
   }
 
   handleSelect(e) {
@@ -162,7 +174,9 @@ export default class PreviousWeek extends React.Component {
                             this.assignPlayer(this.state.ListOfPlayers[i], i)
                           }
                         >
-                          <h4>{this.state.ListOfPlayers[i]}</h4>
+                          <h4>
+                            {this.map_team_name(this.state.ListOfPlayers[i])}
+                          </h4>
                         </ListGroup.Item>
                       );
                     })}
@@ -201,7 +215,8 @@ export default class PreviousWeek extends React.Component {
                                             <Accordion.Item eventKey="q">
                                               <Accordion.Header>
                                                 <h5>
-                                                  {teamName} :{" "}
+                                                  {this.map_team_name(teamName)}{" "}
+                                                  :{" "}
                                                   {
                                                     WinningMatchup[teamName]
                                                       .length
