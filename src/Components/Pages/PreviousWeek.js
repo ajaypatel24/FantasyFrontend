@@ -99,6 +99,7 @@ export default class PreviousWeek extends React.Component {
         this.state.AllData,
         this.state.TeamPhotos,
         "Previous",
+        this.state.teamMap,
       ],
     });
 

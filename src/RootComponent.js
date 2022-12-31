@@ -123,6 +123,8 @@ export default class RootComponent extends React.Component {
       this.state.Categories,
       this.state.AllData,
       this.state.photoData,
+      "Current",
+      this.state.teamMap,
     ];
 
     let teamCompareInformation = [this.state.AllData];

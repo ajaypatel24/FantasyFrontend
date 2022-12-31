@@ -15,6 +15,7 @@ export default class Leaders extends React.Component {
       Source: this.props.LeaderInformation[3],
       Leaders: [],
       TeamPhotos: this.props.LeaderInformation[2], //cached after pulled once
+      TeamMap: this.props.LeaderInformation[4],
       Loading: true,
       selectedIndex: 0,
       WincalculationOld: this.props.LeaderInformation[0],
@@ -23,6 +24,7 @@ export default class Leaders extends React.Component {
 
     this.setTabKey = this.setTabKey.bind(this);
     this.updateComponentData = this.updateComponentData.bind(this);
+    this.map_team_name = this.map_team_name.bind(this);
   }
 
   async updateComponentData() {
@@ -104,6 +106,11 @@ export default class Leaders extends React.Component {
 
   async setTabKey(e) {
     await this.setState({ activeKey: e });
+  }
+
+  map_team_name(name) {
+    console.log(this.state.TeamMap);
+    return this.state.TeamMap[name];
   }
 
   render() {
@@ -188,13 +195,15 @@ export default class Leaders extends React.Component {
                                     <td>
                                       <i>
                                         <h2>
-                                          <strong>{team}</strong>
+                                          <strong>
+                                            {this.map_team_name(team)}
+                                          </strong>
                                         </h2>{" "}
                                       </i>
                                     </td>
                                   ) : (
                                     <td>
-                                      <h4>{team}</h4>
+                                      <h4>{this.map_team_name(team)}</h4>
                                     </td>
                                   )}
                                   {i === 0 ? (
