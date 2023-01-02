@@ -245,10 +245,9 @@ export default class TeamStrength extends React.Component {
                                   <td>
                                     <Badge>
                                       {Math.round(
-                                        this.state.LeagueAverage[item] -
-                                          this.state.TeamAverage[
-                                            this.state.SelectedPlayer
-                                          ][item]
+                                        this.state.TeamAverage[
+                                          this.state.SelectedPlayer
+                                        ][item] - this.state.LeagueAverage[item]
                                       )}{" "}
                                     </Badge>
                                   </td>
