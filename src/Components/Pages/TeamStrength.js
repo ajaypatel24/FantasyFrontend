@@ -1,5 +1,13 @@
 import React from "react";
-import { Col, Row, ListGroup, Tab, Spinner } from "react-bootstrap";
+import {
+  Col,
+  Row,
+  ListGroup,
+  Tab,
+  Spinner,
+  Table,
+  Badge,
+} from "react-bootstrap";
 import axios from "axios";
 import "../../styles/PageStyle.css";
 
@@ -18,6 +26,8 @@ import {
   PolarRadiusAxis,
   Radar,
   Cell,
+  Area,
+  Line,
 } from "recharts";
 
 export default class TeamStrength extends React.Component {
@@ -31,6 +41,7 @@ export default class TeamStrength extends React.Component {
       TeamAverage: "",
       graphData: "",
       TeamMap: "",
+      SelectedPlayer: "",
     };
 
     this.handleClose = this.handleClose.bind(this);
@@ -74,6 +85,7 @@ export default class TeamStrength extends React.Component {
 
   async assignPlayer(player1, i) {
     var teamStats = this.state.TeamAverage[player1];
+    await this.setState({ SelectedPlayer: player1 });
     const teamData = [];
     for (var category in teamStats) {
       var dataPoint = {};
@@ -86,13 +98,16 @@ export default class TeamStrength extends React.Component {
           teamStats[category] - this.state.LeagueAverage[category];
       }
 
+      dataPoint.average = this.state.LeagueAverage[category];
+
       if (dataPoint.value > 0) {
         dataPoint.color = "#8884d8";
       } else {
         dataPoint.color = "#ff7300";
       }
 
-      dataPoint.value = dataPoint.value.toFixed(2);
+      dataPoint.value = Math.round(dataPoint.value);
+
       console.log(this.state.LeagueAverage[category]);
 
       teamData.push(dataPoint);
@@ -116,40 +131,46 @@ export default class TeamStrength extends React.Component {
     const colors = ["#8884d8", "#82ca9d"];
     const data = [
       {
-        subject: "Math",
-        A: 120,
-        B: 110,
-        fullMark: 150,
+        name: "Page A",
+        uv: 4000,
+        pv: 2400,
+        amt: 2400,
       },
       {
-        subject: "Chinese",
-        A: 98,
-        B: 130,
-        fullMark: 150,
+        name: "Page B",
+        uv: 3000,
+        pv: 1398,
+        amt: 2210,
       },
       {
-        subject: "English",
-        A: 86,
-        B: 130,
-        fullMark: 150,
+        name: "Page C",
+        uv: 2000,
+        pv: 9800,
+        amt: 2290,
       },
       {
-        subject: "Geography",
-        A: 99,
-        B: 100,
-        fullMark: 150,
+        name: "Page D",
+        uv: 2780,
+        pv: -3908,
+        amt: 2000,
       },
       {
-        subject: "Physics",
-        A: 85,
-        B: 90,
-        fullMark: 150,
+        name: "Page E",
+        uv: 1890,
+        pv: 4800,
+        amt: 2181,
       },
       {
-        subject: "History",
-        A: 65,
-        B: 85,
-        fullMark: 150,
+        name: "Page F",
+        uv: 2390,
+        pv: 3800,
+        amt: 2500,
+      },
+      {
+        name: "Page G",
+        uv: 3490,
+        pv: 4300,
+        amt: 2100,
       },
     ];
     return (
@@ -175,30 +196,74 @@ export default class TeamStrength extends React.Component {
                 </Col>
 
                 <Col sm={9} lg={9}>
+                  <h1>
+                    {this.state.TeamMap[this.state.SelectedPlayer]} Strength Per
+                    Category
+                  </h1>
                   <Tab.Content>
-                    <ComposedChart
-                      layout="vertical"
-                      width={600}
-                      height={600}
-                      data={this.state.graphData}
-                      margin={{
-                        top: 20,
-                        right: 20,
-                        bottom: 20,
-                        left: 20,
-                      }}
-                    >
-                      <CartesianGrid />
-                      <XAxis type="number" />
-                      <YAxis dataKey="name" type="value" scale="band" />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="value" barSize={20} fill="#413ea0">
-                        {this.state.graphData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Bar>
-                    </ComposedChart>
+                    <Row>
+                      <Col lg={6} sm={12}>
+                        <ComposedChart
+                          width={830}
+                          height={350}
+                          data={this.state.graphData}
+                        >
+                          <XAxis dataKey="name" />
+                          <YAxis
+                            ticks={[-60, -40, -20, 0, 20, 40, 60]}
+                            domain={[-60, 60]}
+                          />
+                          <Tooltip />
+                          <Legend />
+                          <CartesianGrid stroke="#f5f5f5" />
+
+                          <Bar dataKey="value" barSize={60} fill="#413ea0" />
+                        </ComposedChart>
+                      </Col>
+                      <Col lg={6} sm={12}>
+                        {this.state.SelectedPlayer != "" ? (
+                          <Table striped bordered hover size="sm">
+                            <thead>
+                              <tr>
+                                <th>Category</th>
+                                <th>Overall Average</th>
+                                <th>Vs. League Average</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {Object.keys(
+                                this.state.TeamAverage[
+                                  this.state.SelectedPlayer
+                                ]
+                              ).map((item, index) => {
+                                return (
+                                  <tr>
+                                    <td>{item}</td>
+                                    <td>
+                                      {
+                                        this.state.TeamAverage[
+                                          this.state.SelectedPlayer
+                                        ][item]
+                                      }
+                                    </td>
+                                    <td>
+                                      <Badge>
+                                        {Math.round(
+                                          this.state.LeagueAverage[item] -
+                                            this.state.TeamAverage[
+                                              this.state.SelectedPlayer
+                                            ][item]
+                                        )}{" "}
+                                      </Badge>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </Table>
+                        ) : null}
+                      </Col>
+                    </Row>
                   </Tab.Content>
                 </Col>
               </Row>
