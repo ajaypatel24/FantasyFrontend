@@ -66,7 +66,7 @@ export default class TeamStrength extends React.Component {
       });
 
     await axios
-      .get(global.config.apiEndpoint.production + "team-map")
+      .get(global.config.apiEndpoint.production + "/team-map")
 
       .then((response) => {
         this.setState({ TeamMap: response.data });
