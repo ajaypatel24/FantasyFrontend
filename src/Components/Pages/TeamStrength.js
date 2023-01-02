@@ -201,69 +201,64 @@ export default class TeamStrength extends React.Component {
                     Category
                   </h1>
                   <Tab.Content>
-                    <Row>
-                      <Col lg={6} sm={12}>
-                        <ComposedChart
-                          width={830}
-                          height={350}
-                          data={this.state.graphData}
-                        >
-                          <XAxis dataKey="name" />
-                          <YAxis
-                            ticks={[-60, -40, -20, 0, 20, 40, 60]}
-                            domain={[-60, 60]}
-                          />
-                          <Tooltip />
-                          <Legend />
-                          <CartesianGrid stroke="#f5f5f5" />
+                    <div>
+                      <ComposedChart
+                        width={830}
+                        height={350}
+                        data={this.state.graphData}
+                      >
+                        <XAxis dataKey="name" />
+                        <YAxis
+                          ticks={[-60, -40, -20, 0, 20, 40, 60]}
+                          domain={[-60, 60]}
+                        />
+                        <Tooltip />
+                        <Legend />
+                        <CartesianGrid stroke="#f5f5f5" />
 
-                          <Bar dataKey="value" barSize={60} fill="#413ea0" />
-                        </ComposedChart>
-                      </Col>
-                      <Col lg={6} sm={12}>
-                        {this.state.SelectedPlayer != "" ? (
-                          <Table striped bordered hover size="sm">
-                            <thead>
-                              <tr>
-                                <th>Category</th>
-                                <th>Overall Average</th>
-                                <th>Vs. League Average</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {Object.keys(
-                                this.state.TeamAverage[
-                                  this.state.SelectedPlayer
-                                ]
-                              ).map((item, index) => {
-                                return (
-                                  <tr>
-                                    <td>{item}</td>
-                                    <td>
-                                      {
-                                        this.state.TeamAverage[
-                                          this.state.SelectedPlayer
-                                        ][item]
-                                      }
-                                    </td>
-                                    <td>
-                                      <Badge>
-                                        {Math.round(
-                                          this.state.LeagueAverage[item] -
-                                            this.state.TeamAverage[
-                                              this.state.SelectedPlayer
-                                            ][item]
-                                        )}{" "}
-                                      </Badge>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </Table>
-                        ) : null}
-                      </Col>
-                    </Row>
+                        <Bar dataKey="value" barSize={60} fill="#413ea0" />
+                      </ComposedChart>
+
+                      {this.state.SelectedPlayer != "" ? (
+                        <Table striped bordered hover size="sm">
+                          <thead>
+                            <tr>
+                              <th>Category</th>
+                              <th>Overall Average</th>
+                              <th>Vs. League Average</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Object.keys(
+                              this.state.TeamAverage[this.state.SelectedPlayer]
+                            ).map((item, index) => {
+                              return (
+                                <tr>
+                                  <td>{item}</td>
+                                  <td>
+                                    {
+                                      this.state.TeamAverage[
+                                        this.state.SelectedPlayer
+                                      ][item]
+                                    }
+                                  </td>
+                                  <td>
+                                    <Badge>
+                                      {Math.round(
+                                        this.state.LeagueAverage[item] -
+                                          this.state.TeamAverage[
+                                            this.state.SelectedPlayer
+                                          ][item]
+                                      )}{" "}
+                                    </Badge>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </Table>
+                      ) : null}
+                    </div>
                   </Tab.Content>
                 </Col>
               </Row>
