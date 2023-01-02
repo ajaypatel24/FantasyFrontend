@@ -18,6 +18,7 @@ import TeamCompare from "./Components/Pages/TeamCompare";
 import CurrentStats from "./Components/Pages/CurrentStats";
 import PreviousWeek from "./Components/Pages/PreviousWeek";
 import PlayerZScore from "./Components/Pages/PlayerZScore";
+import TeamStrength from "./Components/Pages/TeamStrength";
 
 export default class RootComponent extends React.Component {
   constructor(props) {
@@ -145,7 +146,10 @@ export default class RootComponent extends React.Component {
                 <Button href="#/Prediction" variant="dark" id="4">
                   Predictions
                 </Button>
-                <Button href="#/PlayerRating" variant="dark" id="5">
+                <Button href="#/Strength" variant="dark" id="5">
+                  Team Strength
+                </Button>
+                <Button href="#/PlayerRating" variant="dark" id="6">
                   Player Rating
                 </Button>
               </Nav>
@@ -199,6 +203,17 @@ export default class RootComponent extends React.Component {
                       exact
                       path="/PlayerRating"
                       component={PlayerZScore}
+                    />
+
+                    <Route
+                      exact
+                      path="/Strength"
+                      render={(props) => (
+                        <TeamStrength
+                          {...props}
+                          TeamCompareInformation={teamCompareInformation}
+                        />
+                      )}
                     />
 
                     <Route
