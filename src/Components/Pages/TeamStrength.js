@@ -76,6 +76,8 @@ export default class TeamStrength extends React.Component {
 
     var PlayerList = Object.keys(this.state.TeamAverage);
 
+    console.log(this.state.LeagueAverage);
+
     await this.setState({ ListOfPlayers: PlayerList });
 
     await this.assignPlayer(this.state.ListOfPlayers[0], 0);
