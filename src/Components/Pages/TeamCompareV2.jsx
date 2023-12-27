@@ -10,6 +10,8 @@ import {
     Nav,
     TabContent
   } from "react-bootstrap";
+import AccordionComponent from "./accordion";
+import TeamNav from "./teamnav";
 export default class TeamCompareV2 extends React.Component {
   constructor(props) {
     super(props);
@@ -31,10 +33,11 @@ export default class TeamCompareV2 extends React.Component {
     console.log(this.state.rawDataFromResponseV2)
 
     Object.keys(this.state.rawDataFromResponseV2).map((item, index) => {
+      console.log(index)
         this.state.rawDataFromResponseV2[item]["winning_matchup"].map((data, index) => {
-            console.log(data["team_name"])
+            
             data["category_won"].map((category, index) => {
-                console.log(category)
+                
             })
         })
         //console.log(this.state.rawDataFromResponseV2[item]["winning_matchup"])
@@ -43,60 +46,33 @@ export default class TeamCompareV2 extends React.Component {
 
   render() {
     return (
-        <Tab.Container id="left-tabs-example">
-            {this.state.rawDataFromResponseV2 === null ?
+        <Tab.Container id="left-tabs-example" defaultActiveKey={0}>
+          {this.state.rawDataFromResponseV2 === null ?
             null
             :
-            <Container>
-            
-        {Object.keys(this.state.rawDataFromResponseV2).map((item, index) => {
-            return (
-                <Row>
+            <Row>
                 <Col sm={3}>
-            <Nav variant="pills" className="flex-column">
-              <Nav.Item>
-                <Nav.Link eventKey={index}>{item}</Nav.Link>
-              </Nav.Item>
-            </Nav>
-          </Col>
-          <Col sm={9}>
-          <Tab.Content>
-          <Tab.Pane eventKey={index}>
-          <Accordion defaultActiveKey="0">
-            {this.state.rawDataFromResponseV2[item]["winning_matchup"].map((item,index) => {
-                
-                return (
+                  <Container>
+                  <TeamNav data={Object.keys(this.state.rawDataFromResponseV2)} />
+                  </Container>
+                </Col>
+                <Col sm={9}>
+                <Tab.Content>
+                  {Object.keys(this.state.rawDataFromResponseV2).map((item,index) => {
                     
-                    <Accordion.Item eventKey={index}>
-                <Accordion.Header>{item["team_name"]} {item["category_won"].length}</Accordion.Header>
-                
-                <Accordion.Body>
-                {item["category_won"].map((category, index) => {
                     return (
-                        <div>
-                        {category}
-                        </div>
+                     
+                      
+                    <AccordionComponent matchupswon={this.state.rawDataFromResponseV2[item]["winning_matchup"].length} dataindex={index} data={this.state.rawDataFromResponseV2[item]["winning_matchup"]} />
+                    
                     )
-                })}
-                </Accordion.Body>
-                </Accordion.Item>
-                
-                )
-                
-            })}
-            </Accordion>
-            </Tab.Pane>
-            </Tab.Content>
-            </Col>
+                    
+                  })}
+                </Tab.Content>
+              </Col>   
             </Row>
-            )
-        })}
-
-        
-    
-</Container>
-  }
-    </Tab.Container>
-    )
+            }
+          </Tab.Container>
+      )
   }
 }
