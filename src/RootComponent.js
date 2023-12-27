@@ -20,6 +20,7 @@ import PreviousWeek from "./Components/Pages/PreviousWeek";
 import PlayerZScore from "./Components/Pages/PlayerZScore";
 import TeamStrength from "./Components/Pages/TeamStrength";
 import TeamCompareV2 from "./Components/Pages/TeamCompareV2";
+import LeadersV2 from "./Components/Pages/LeadersV2";
 
 export default class RootComponent extends React.Component {
   constructor(props) {
@@ -193,6 +194,17 @@ export default class RootComponent extends React.Component {
                       path="/CompareV2"
                       render={(props) => <TeamCompareV2 />}
                     />
+                    <Route
+                      exact
+                      path="/LeaderV2"
+                      render={(props) => (
+                        <LeadersV2
+                          {...props}
+                          LeaderInformation={leaderInformation}
+                        />
+                      )}
+                    />
+
                     <Route
                       exact
                       path="/"
