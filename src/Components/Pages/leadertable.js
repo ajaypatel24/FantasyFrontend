@@ -25,7 +25,7 @@ export default class LeaderTable extends React.Component {
   render() {
     return (
       <Tab.Pane eventKey={this.props.dataindex}>
-        <Table>
+        <Table striped="columns">
           <thead>
             <tr>
               <th colSpan="2">

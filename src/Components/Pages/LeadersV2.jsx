@@ -75,7 +75,7 @@ export default class LeadersV2 extends React.Component {
                               
                             )
                           })}
-                        </Tab.Content>
+                    </Tab.Content>
                 </Col>
               </Row>
             

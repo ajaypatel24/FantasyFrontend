@@ -6,6 +6,8 @@ import {
   Spinner,
   ListGroup,
   Figure,
+  Container,
+  Toast,
 } from "react-bootstrap";
 import React from "react";
 
@@ -49,11 +51,12 @@ export default class TableData extends React.Component {
         {Object.keys(this.state.sortedCategoryData).map((item, index) => {
           return (
             <tr>
+              {/*
               <td>
                 <Figure>
                   <Figure.Image
-                    height="50px"
-                    width="50px"
+                    height="100px"
+                    width="100px"
                     style={{ alignSelf: "center" }}
                     src={this.props.photodata[item]}
                     alt=""
@@ -66,6 +69,27 @@ export default class TableData extends React.Component {
               </td>
               <td>
                 <h4>{this.props.data[item]}</h4>
+              </td>
+          */}
+              <td>
+                <Toast>
+                  <Toast.Header closeButton={false}>
+                    <h4 className="me-auto">{item}</h4>
+
+                    <Figure>
+                      <Figure.Image
+                        height="50px"
+                        width="50px"
+                        src={this.props.photodata[item]}
+                        alt=""
+                        thumbnail
+                      />
+                    </Figure>
+                  </Toast.Header>
+                  <Toast.Body>
+                    <h4>{this.props.data[item]}</h4>
+                  </Toast.Body>
+                </Toast>
               </td>
             </tr>
           );
