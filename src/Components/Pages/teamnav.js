@@ -18,7 +18,9 @@ export default class TeamNav extends React.Component {
           return (
             <ListGroup variant="pills" className="flex-column">
               <ListGroup.Item eventKey={index}>
-                <h4>{item}</h4>
+                <h4>
+                  {item} {this.props.defaultString}
+                </h4>
               </ListGroup.Item>
             </ListGroup>
           );
