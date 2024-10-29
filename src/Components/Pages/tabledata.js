@@ -7,6 +7,7 @@ import {
   ListGroup,
   Figure,
   Container,
+  Image,
   Toast,
 } from "react-bootstrap";
 import React from "react";
@@ -72,24 +73,10 @@ export default class TableData extends React.Component {
               </td>
           */}
               <td>
-                <Toast>
-                  <Toast.Header closeButton={false}>
-                    <h4 className="me-auto">{item}</h4>
-
-                    <Figure>
-                      <Figure.Image
-                        height="50px"
-                        width="50px"
-                        src={this.props.photodata[item]}
-                        alt=""
-                        thumbnail
-                      />
-                    </Figure>
-                  </Toast.Header>
-                  <Toast.Body>
-                    <h4>{this.props.data[item]}</h4>
-                  </Toast.Body>
-                </Toast>
+                <h4>{item}</h4>
+              </td>
+              <td>
+                <h4>{this.props.data[item]}</h4>
               </td>
             </tr>
           );

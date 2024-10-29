@@ -1,6 +1,6 @@
 module.exports = global.config = {
   apiEndpoint: {
-    production: "",
-    //production: "https://fantasy-backend-5wun.onrender.com",
+    //production: "",
+    production: "http://3.140.187.88:8000",
   },
 };

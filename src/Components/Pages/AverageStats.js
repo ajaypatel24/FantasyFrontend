@@ -76,6 +76,8 @@ export default class AverageStats extends PureComponent {
     await this.setState({ AverageData: obj });
 
     this.getChartDataForCategory("3PTM");
+
+    console.log(this.state.graphData);
   }
 
   async getChartDataForCategory() {

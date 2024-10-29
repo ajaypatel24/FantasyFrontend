@@ -5,6 +5,8 @@ import "../../styles/PageStyle.css";
 
 import TeamNav from "./teamnav";
 import LeaderTable from "./leadertable";
+import AverageStats from "./AverageStats";
+import BarChartStats from "./BarChartStats";
 export default class LeadersV2 extends React.Component {
   constructor(props) {
     super(props);
@@ -57,7 +59,7 @@ export default class LeadersV2 extends React.Component {
           <div className="tableContent">
             
               <Row>
-                <Col sm={3}>
+                <Col lg={3}>
                   {this.state.rawDataFromResponseV2 === null ? null : (
                     <TeamNav
                       data={Object.keys(this.state.rawDataFromResponseV2)}
@@ -65,7 +67,7 @@ export default class LeadersV2 extends React.Component {
                     />
                   )}
                 </Col>
-                <Col sm={9}>
+                <Col lg={3}>
                   <Tab.Content>
 
                           {Object.keys(this.state.rawDataFromResponseV2).map((item, index) => {
@@ -76,6 +78,15 @@ export default class LeadersV2 extends React.Component {
                             )
                           })}
                     </Tab.Content>
+                </Col>
+                <Col lg={6}>
+                <Tab.Content>
+                {Object.keys(this.state.rawDataFromResponseV2).map((item, index) => {
+                  return (
+                  <BarChartStats dataindex={index} data={this.state.rawDataFromResponseV2[item]} item={item} />
+                  )
+                  })}
+                  </Tab.Content>
                 </Col>
               </Row>
             
